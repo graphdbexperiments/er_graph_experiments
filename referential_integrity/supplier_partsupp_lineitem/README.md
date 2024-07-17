@@ -5,7 +5,7 @@ Underneath are the results shown for different scaling factors for TPC-H:
 <ins>Results for TPC-H small (sf=0.01) shown for time regularly scaled and logarithmically scaled:</ins><br>
 <p align="center" width="100%">
 <img src="./images/update_chain_small_supp-poly.png" alt="Validation of update chain starting on SUPPLIER on TPC-H small" width ="40%"/>
-<img src="./images/update_chain_supp_part.png" alt="Validation of update chain starting on SUPPLIER on TPC-H small" width ="40%"/>
+<img src="./images/update_chain_small_supp.png" alt="Validation of update chain starting on SUPPLIER on TPC-H small" width ="40%"/>
 </p>
 <ins>Results for TPC-H medium (sf=0.1) shown for time regularly scaled and logarithmic scaled:</ins><br>
 <p align="center" width="100%">
