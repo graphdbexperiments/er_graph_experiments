@@ -6,6 +6,7 @@ This Github repository complements our research on integrity management in graph
 
 In particular, this repository is comprised of the following:
 
+- an extended version of the research paper
 - experiment results on the TPC-H benchamrk
 - compilations that outline how experiments have been conducted
 - images illustrating the experiments on graph datasets
@@ -18,6 +19,11 @@ The software used to perform the experiments carried out in our research are:
 - Neo4j Desktop 1.5.0
 
 - Neo4j Browser 5.0.0
+
+- Neo4j Python Driver 5.1.0
+
+- Python 3.9.13
+
 
 
 The TPC-H benchmark is provided on the official [TPC website](https://www.tpc.org/tpch/). 
