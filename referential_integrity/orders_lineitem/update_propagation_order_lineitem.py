@@ -161,9 +161,9 @@ def main():
 
     for index in range(len(percentage_to_update)):
 
-        runs = 1
+        runs = 20
 
-        outliers = 0
+        outliers = 5
 
         for i in range(0, runs):
             
