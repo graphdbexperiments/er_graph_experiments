@@ -1,6 +1,6 @@
 # Entity/Relationship Graphs (Unifying Data Modelling and Taking Data Integrity Management to the Next Level)
 
-## Introduction:
+## Introduction: 
 
 This Github repository complements our research on integrity management in graph databases using E/R keys and E/R links in E/R graphs.
 
