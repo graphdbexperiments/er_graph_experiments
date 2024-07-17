@@ -1,0 +1,1 @@
+This folder contains the Python file to recreate the experiments for the verification of the E/R key $PARTSUPP(\\{PART, SUPPLIER\\}, \emptyset)$ on TPC-H for different scaling factors and under different semantics as well as the results.
