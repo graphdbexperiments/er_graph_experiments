@@ -1,6 +1,4 @@
-# Entity/Relationship Graphs
-
-## (Unifying Data Modelling and Taking Data Integrity Management to the Next Level)
+# Entity/Relationship Graphs (Unifying Data Modelling and Taking Data Integrity Management to the Next Level)
 
 ## Introduction:
 
