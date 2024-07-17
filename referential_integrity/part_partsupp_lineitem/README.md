@@ -1,15 +1,17 @@
 This folder contains the Python file to recreate the experiments for the update propagation chain $PART \subset PARTSUPP \subset LINEITEM$ on TPC-H for different scaling factors and under different semantics as well as the results.
 
-<ins>Results for TPC-H small (sf=0.01):</ins><br>
+<ins>Results for TPC-H small (sf=0.01) shown for time regularly scaled and logarithmic scaled:</ins><br>
 <p align="center" width="100%">
 <img src="./images/update_chain_small_part-poly.png" alt="Validation of update chain starting on PART on TPC-H small" width ="40%"/>
 <img src="./images/update_chain_small_part.png" alt="Validation of update chain starting on PART on TPC-H small" width ="40%"/>
 </p>
-<ins>Results for TPC-H medium (sf=0.1):</ins><br>
+<ins>Results for TPC-H medium (sf=0.1) shown for time regularly scaled and logarithmic scaled:</ins><br>
 <p align="center" width="100%">
-<img src="./images/key_lineitem_sf=01.png" alt="Validation of E/R key on LINEITEM on TPC-H medium" width ="40%"/>
+<img src="./images/update_chain_medium_part-poly.png" alt="Validation of update chain starting on PART on TPC-H medium" width ="40%"/>
+<img src="./images/update_chain_medium_part.png" alt="Validation of update chain starting on PART on TPC-H medium" width ="40%"/>
 </p>
-<ins>Results for TPC-H large (sf=1):</ins><br>
+<ins>Results for TPC-H large (sf=1) shown for time regularly scaled and logarithmic scaled:</ins><br>
 <p align="center" width="100%">
-<img src="./images/key_lineitem_sf=1.png" alt="Validation of E/R key on LINEITEM on TPC-H large" width ="40%"/>
+<img src="./images/update_chain_large_part-poly.png" alt="Validation of update chain starting on PART on TPC-H large" width ="40%"/>
+<img src="./images/update_chain_large_part.png" alt="Validation of update chain starting on PART on TPC-H large" width ="40%"/>
 </p>
