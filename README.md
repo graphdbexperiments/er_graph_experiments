@@ -1,8 +1,10 @@
-# Integrity Managament in Graph Databases using E/R keys
+# Entity/Relationship Graphs
+
+## (Unifying Data Modelling and Taking Data Integrity Management to the Next Level)
 
 ## Introduction:
 
-This Github repository complements our research on integrity management in graph databases using E/R keys in E/R graphs.
+This Github repository complements our research on integrity management in graph databases using E/R keys and E/R links in E/R graphs.
 
 In particular, this repository is comprised of the following:
 
