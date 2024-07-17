@@ -1,0 +1,97 @@
+Arrows in direction from subset to superset, i.e. from foreign key to primary key
+
+MATCH (n:NATION),(r:REGION)
+WHERE n.n_regionkey = r.r_regionkey
+MERGE (n)-[e:NATION_REGION]->(r)
+
+
+MATCH (s:SUPPLIER),(n:NATION)
+WHERE s.s_nationkey = n.n_nationkey
+MERGE (s)-[e:SUPPLIER_NATION]->(n)
+
+
+MATCH (ps:PARTSUPP),(p:PART)
+WHERE ps.ps_partkey = p.p_partkey
+MERGE (ps)-[e:PARTSUPP_PART]->(p)
+
+
+MATCH (ps:PARTSUPP),(s:SUPPLIER)
+WHERE ps.ps_suppkey = s.s_suppkey
+MERGE (ps)-[e:PARTSUPP_SUPPLIER]->(s)
+
+
+MATCH (c:CUSTOMER),(n:NATION)
+WHERE c.c_nationkey = n.n_nationkey
+MERGE (c)-[e:CUSTOMER_NATION]->(n)
+
+
+
+MATCH (o:ORDERS),(c:CUSTOMER)
+WHERE o.o_custkey = c.c_custkey
+MERGE (o)-[e:ORDERS_CUSTOMER]->(c)
+
+
+# for edges between LINEITEM and ORDERS nodes as well as LINEITEM and PARTSUPP nodes proceed as above with corresponding Cypher staments or for larger instances as below
+
+
+##### from here on use exports of csv and import in batches (needs APOC installed), especially required for large TPC-H instance
+
+# temporary index on LINEITEM partkey, suppkey might speed up query
+
+# order_key export
+
+WITH
+"MATCH (o:ORDERS)
+RETURN o.o_orderkey AS order_key"
+AS query
+CALL apoc.export.csv.query(query, "order_keys_large.csv", {})
+YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+
+
+# create LINEITEM_ORDERS edges
+
+:auto LOAD CSV WITH HEADERS FROM 'file:///order_keys_large.csv' AS line
+CALL{WITH line
+    MATCH (l:LINEITEM{l_orderkey: toInteger(line.key_list)}), (o:ORDERS{o_orderkey: toInteger(line.key_list)})
+    MERGE (l)-[e:LINEITEM_ORDERS]->(o)
+} IN TRANSACTIONS OF 1000 ROWS
+
+
+
+
+# partsupp_keys export
+
+WITH
+"MATCH (ps:PARTSUPP)
+RETURN ps.ps_partkey AS part_key, ps.ps_suppkey AS supp_key"
+AS query
+CALL apoc.export.csv.query(query, "partsupp_keys_large.csv", {})
+YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+
+
+# create LINEITEM_PARTSUPP edges
+
+:auto LOAD CSV WITH HEADERS FROM 'file:///partsupp_keys_large.csv' AS line
+CALL{WITH line
+    MATCH (l:LINEITEM{l_partkey: toInteger(line.part_key), l_suppkey: toInteger(line.supp_key)}), (ps:PARTSUPP{ps_partkey: toInteger(line.part_key), ps_suppkey: toInteger(line.supp_key)})
+    MERGE (l)-[e:LINEITEM_PARTSUPP]->(ps)
+} IN TRANSACTIONS OF 1000 ROWS
+
+
+
+               better
+                 |
+                 |
+                 v
+
+
+#alternative (might run into deadlock and needs to be executed multiple times, no issue as MERGE instead of CREATE):
+
+CALL apoc.periodic.iterate(
+"MATCH (ps:PARTSUPP) MATCH (l:LINEITEM{l_partkey: ps.ps_partkey, l_suppkey: ps.ps_suppkey}) RETURN ps, l",
+"MERGE (l)-[e:LINEITEM_PARTSUPP]->(ps)",
+{batchSize: 10000, parallel: true}    
+)
+
