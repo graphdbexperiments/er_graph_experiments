@@ -14,21 +14,3 @@ Underneath are the results shown for different scaling factors for TPC-H:
 <p align="center" width="100%">
 <img src="./images/update_chain_large_supp_new.png" alt="Validation of update chain starting on SUPPLIER on TPC-H large" width ="40%"/>
 </p>
-
-Underneath are the results shown for TPC-H modeled under different semantics shown for time logarithmically scaled:
-
-<ins>Results for TPC-H under relational semantics:</ins><br>
-<p align="center" width="100%">
-<img src="./images/update_chain_relational_supp.png" alt="Validation of update chain starting on SUPPLIER on TPC-H under relational semantics" width ="40%"/>
-</p>
-
-<ins>Results for TPC-H under mixed semantics:</ins><br>
-<p align="center" width="100%">
-<img src="./images/update_chain_mixed_supp.png" alt="Validation of update chain starting on SUPPLIER on TPC-H under mixed semantics" width ="40%"/>
-</p>
-
-<ins>Results for TPC-H under graph semantics:</ins><br>
-<p align="center" width="100%">
-<img src="./images/update_chain_graph_supp.png" alt="Validation of update chain starting on SUPPLIER on TPC-H under graph semantics" width ="40%"/>
-</p>
-
