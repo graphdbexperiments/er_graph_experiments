@@ -37,7 +37,7 @@ The experiments in our research on E/R keys are outlined in the following:
 
 - 1.) [How can E/R keys improve entity integrity management?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity)
 - 2.) [How can E/R keys improve referential integrity management?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity)
-- 3.) [What effect do different semantics on query execution?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity)
+- 3.) [What effect do different semantics on query execution?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations)
 
 
 Detailed information on the results of these experiments and instructions on how to replicate them can be found in this repository in the experiments folder or by clicking on the links above. In what follows we like to provide an overview on the different experiments.
