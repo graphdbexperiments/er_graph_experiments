@@ -24,6 +24,8 @@ The software used to perform the experiments carried out in our research are:
 
 - Python 3.9.13
 
+- My SQL 8.0.0
+
 
 
 The TPC-H benchmark is provided on the official [TPC website](https://www.tpc.org/tpch/). 
@@ -35,6 +37,7 @@ The experiments in our research on E/R keys are outlined in the following:
 
 - 1.) [How can E/R keys improve entity integrity management?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity)
 - 2.) [How can E/R keys improve referential integrity management?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity)
+- 3.) [What effect do different semantics on query execution?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity)
 
 
 Detailed information on the results of these experiments and instructions on how to replicate them can be found in this repository in the experiments folder or by clicking on the links above. In what follows we like to provide an overview on the different experiments.
@@ -46,4 +49,8 @@ We highlighted the benefits of E/R keys enforced on E/R graphs by manually check
 ### 2.) Referential Integrity
 
 The benefits of our modelling approach with respect to referential integrity management has been shown through the execution of update propagations. Here, we updated properties on nodes that might require updates of the same property on differenlty labelled nodes where they serve as foreign key in TPC-H. For the same property this might result in a different update propagation depending on whether TPC-H had been modelled adhering to relational, mixed or graph semantics.
+
+### 3.) Benchmark Queries and Refresh Operations
+
+We investigate the effect of the three different graph modelling approaches on query execution, insertion and deletion. More precisely, in our experiments we have translated TPC-H benchmark queries and the Refresh Operations into Cypher and executed them on our graph translations of TPC-H for different scaling factors and in addition, compared their performance to MySQL.
 
