@@ -1,0 +1,62 @@
+###### Parameters
+
+r.r_name, o.o_orderdate
+
+
+##### relational semantics
+
+WITH ['AFRICA', 'AMERICA', 'ASIA', 'EUROPE', 'MIDDLE EAST'] as regions, toInteger(floor(5*rand())) AS position
+WITH regions[position] AS selected_region, 1993 + toInteger(floor(4*rand())) AS selected_year
+MATCH (c:CUSTOMER), (o:ORDERS), (l:LINEITEM), (s:SUPPLIER), (n:NATION), (r:REGION)
+WHERE c.c_custkey = o.o_custkey
+AND l.l_orderkey = o.o_orderkey
+AND l.l_suppkey = s.s_suppkey
+AND c.c_nationkey = s.s_nationkey
+AND s.s_nationkey = n.n_nationkey
+AND n.n_regionkey = r.r_regionkey
+AND r.r_name = selected_region
+AND o.o_orderdate >= date(selected_year + '-01-01')
+AND o.o_orderdate < date((selected_year + 1) + '-01-01')
+WITH n.n_name AS nation, SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN nation, revenue
+ORDER BY revenue DESC
+
+
+
+
+
+##### mixed semantics
+
+WITH ['AFRICA', 'AMERICA', 'ASIA', 'EUROPE', 'MIDDLE EAST'] as regions, toInteger(floor(5*rand())) AS position
+WITH regions[position] AS selected_region, 1993 + toInteger(floor(4*rand())) AS selected_year
+MATCH (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n:NATION)-[:NATION_REGION]->(r:REGION),
+(l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP), (s:SUPPLIER)-[SUPPLIER_NATION]->(n:NATION)
+WHERE l.l_orderkey = o.o_orderkey
+AND ps.ps_suppkey = s.s_suppkey
+AND r.r_name = selected_region
+AND o.o_orderdate >= date(selected_year + '-01-01')
+AND o.o_orderdate < date((selected_year + 1) + '-01-01')
+WITH n.n_name AS nation, SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN nation, revenue
+ORDER BY revenue DESC
+
+
+
+
+
+##### graph semantics
+
+WITH ['AFRICA', 'AMERICA', 'ASIA', 'EUROPE', 'MIDDLE EAST'] as regions, toInteger(floor(5*rand())) AS position
+WITH regions[position] AS selected_region, 1993 + toInteger(floor(4*rand())) AS selected_year
+MATCH (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n:NATION)-[:NATION_REGION]->(r:REGION),
+(l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s:SUPPLIER)-[SUPPLIER_NATION]->(n:NATION)
+WHERE r.r_name = selected_region
+AND o.o_orderdate >= date(selected_year + '-01-01')
+AND o.o_orderdate < date((selected_year + 1) + '-01-01')
+WITH n.n_name AS nation, SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN nation, revenue
+ORDER BY revenue DESC
+
+
+
+
