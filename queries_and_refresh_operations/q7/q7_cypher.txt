@@ -1,0 +1,77 @@
+###### Parameters
+
+n1.n_name, n2.n_name
+
+##### relational semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation1, nations[(position + 1 + toInteger(floor(23*rand()))) % 25] AS nation2
+MATCH (s:SUPPLIER), (l:LINEITEM), (o:ORDERS), (c:CUSTOMER), (n1:NATION), (n2:NATION)
+WHERE s.s_suppkey = l.l_suppkey
+  AND o.o_orderkey = l.l_orderkey
+  AND c.c_custkey = o.o_custkey
+  AND s.s_nationkey = n1.n_nationkey
+  AND c.c_nationkey = n2.n_nationkey
+  AND (
+    (n1.n_name = nation1 AND n2.n_name = nation2) OR
+    (n1.n_name = nation2 AND n2.n_name = nation1)
+  )
+  AND l.l_shipdate >= date('1995-01-01')
+  AND l.l_shipdate <= date('1996-12-31')
+WITH n1.n_name AS supp_nation, 
+     n2.n_name AS cust_nation, 
+     toString(l.l_shipdate.year) AS l_year,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN supp_nation, cust_nation, l_year, revenue
+ORDER BY supp_nation, cust_nation, l_year
+
+
+
+
+
+
+##### mixed semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation1, nations[(position + 1 + toInteger(floor(23*rand()))) % 25] AS nation2
+MATCH (n1:NATION)<-[:SUPPLIER_NATION]-(s:SUPPLIER), (l:LINEITEM), (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n2:NATION)
+WHERE s.s_suppkey = l.l_suppkey
+  AND o.o_orderkey = l.l_orderkey
+  AND (
+    (n1.n_name = nation1 AND n2.n_name = nation2) OR
+    (n1.n_name = nation2 AND n2.n_name = nation1)
+  )
+  AND l.l_shipdate >= date('1995-01-01')
+  AND l.l_shipdate <= date('1996-12-31')
+WITH n1.n_name AS supp_nation, 
+     n2.n_name AS cust_nation, 
+     toString(l.l_shipdate.year) AS l_year,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN supp_nation, cust_nation, l_year, revenue
+ORDER BY supp_nation, cust_nation, l_year
+
+
+
+
+
+##### graph semantics
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation1, nations[(position + 1 + toInteger(floor(23*rand()))) % 25] AS nation2
+MATCH (n1:NATION)<-[:SUPPLIER_NATION]-(s:SUPPLIER)<-[]-(ps:PARSTUPP)<-[]-(l:LINEITEM)-[:LINETIEM_ORDERS]->(o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n2:NATION)
+WHERE ((n1.n_name = nation1 AND n2.n_name = nation2) OR
+    (n1.n_name = nation2 AND n2.n_name = nation1))
+  AND l.l_shipdate >= date('1995-01-01')
+  AND l.l_shipdate <= date('1996-12-31')
+WITH n1.n_name AS supp_nation, 
+     n2.n_name AS cust_nation, 
+     toString(l.l_shipdate.year) AS l_year,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN supp_nation, cust_nation, l_year, revenue
+ORDER BY supp_nation, cust_nation, l_year
+
