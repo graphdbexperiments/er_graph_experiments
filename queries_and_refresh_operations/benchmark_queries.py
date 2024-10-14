@@ -698,7 +698,7 @@ def main():
 
     # Experiment results
 
-    filename = "Update_propagation_results_" + "query_" + str(query_number) + "___" + str(factor) + "_" + (is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph") + "_" + str(today) + "---" + str(current) + ".xlsx"
+    filename = "Benchmark_query_results_" + "query_" + str(query_number) + "___" + str(factor) + "_" + (is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph") + "_" + str(today) + "---" + str(current) + ".xlsx"
     sheetname = "Experiment"
     experiment_name = f"TPC-H benchmark queries with scaling factor {factor}"
 
