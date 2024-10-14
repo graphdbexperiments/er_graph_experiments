@@ -1,0 +1,83 @@
+###### Parameters
+
+
+
+
+##### relational semantics
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+['AFRICA', 'AMERICA', 'AMERICA', 'AMERICA', 'AFRICA', 'AFRICA', 'EUROPE', 'EUROPE', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'AFRICA', 'AFRICA', 'AFRICA', 'AMERICA', 'ASIA', 'EUROPE', 'ASIA', 'ASIA', 'EUROPE', 'EUROPE', 'AMERICA'] AS regions,
+toInteger(floor(25*rand())) AS position, ['STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO'] AS types1, ['ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED'] AS types2, ['TIN', 'NICKEL', 'BRASS', 'STEEL', 'COPPER'] AS types3, toInteger(floor(6*rand())) AS pos1, toInteger(floor(5*rand())) AS pos2, toInteger(floor(5*rand())) AS pos3 
+WITH types1[pos1] + ' ' + types2[pos2] + ' ' + types3[pos3]  AS type, nations[position] AS selected_nation, regions[position] as region
+MATCH (p:PART), (s:SUPPLIER), (l:LINEITEM), (o:ORDERS), (c:CUSTOMER), (r:REGION), (n1:NATION), (n2:NATION)
+WHERE p.p_partkey = l.l_partkey
+  AND s.s_suppkey = l.l_suppkey
+  AND l.l_orderkey = o.o_orderkey
+  AND o.o_custkey = c.c_custkey
+  AND l.l_suppkey = s.s_suppkey
+  AND c.c_nationkey = n1.n_nationkey
+  AND n1.n_regionkey = r.r_regionkey
+  AND r.r_name = region
+  AND s.s_nationkey = n2.n_nationkey
+  AND o.o_orderdate >= date('1995-01-01')
+  AND o.o_orderdate < date('1997-01-01')
+  AND p.p_type = type
+WITH l.l_shipdate.year AS o_year, 
+     l.l_extendedprice * (1 - l.l_discount) AS volume,
+     n2.n_name AS nation,
+     selected_nation
+WITH o_year, SUM(CASE WHEN nation = selected_nation THEN volume ELSE 0 end)/SUM(volume) AS mkt_share
+RETURN o_year, mkt_share
+ORDER BY o_year
+
+
+
+
+
+
+##### mixed semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+['AFRICA', 'AMERICA', 'AMERICA', 'AMERICA', 'AFRICA', 'AFRICA', 'EUROPE', 'EUROPE', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'AFRICA', 'AFRICA', 'AFRICA', 'AMERICA', 'ASIA', 'EUROPE', 'ASIA', 'ASIA', 'EUROPE', 'EUROPE', 'AMERICA'] AS regions,
+toInteger(floor(25*rand())) AS position, ['STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO'] AS types1, ['ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED'] AS types2, ['TIN', 'NICKEL', 'BRASS', 'STEEL', 'COPPER'] AS types3, toInteger(floor(6*rand())) AS pos1, toInteger(floor(5*rand())) AS pos2, toInteger(floor(5*rand())) AS pos3 
+WITH types1[pos1] + ' ' + types2[pos2] + ' ' + types3[pos3]  AS type, nations[position] AS selected_nation, regions[position] as region
+MATCH (p:PART), (s:SUPPLIER), (l:LINEITEM), (o:ORDERS), (c:CUSTOMER), (r:REGION), (n1:NATION), (n2:NATION)
+MATCH (r:REGION)<-[:NATION_REGION]-(n2:NATION)<-[:SUPPLIER_NATION]-(s:SUPPLIER)-[:PARTSUPP_SUPPLIER]-(ps:PARTSUPP)-[PARTSUPP_PART]->(p:PART), (ps:PARTSUPP)<-[:LINEITEM_PARTSUPP]-(l:LINEITEM), (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n1:NATION)
+WHERE l.l_orderkey = o.o_orderkey
+  AND r.r_name = region
+  AND o.o_orderdate >= date('1995-01-01')
+  AND o.o_orderdate < date('1997-01-01')
+  AND p.p_type = type
+WITH l.l_shipdate.year AS o_year, 
+     l.l_extendedprice * (1 - l.l_discount) AS volume,
+     n2.n_name AS nation,
+     selected_nation
+WITH o_year, SUM(CASE WHEN nation = selected_nation THEN volume ELSE 0 end)/SUM(volume) AS mkt_share
+RETURN o_year, mkt_share
+ORDER BY o_year
+
+
+
+
+##### graph semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+['AFRICA', 'AMERICA', 'AMERICA', 'AMERICA', 'AFRICA', 'AFRICA', 'EUROPE', 'EUROPE', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'ASIA', 'AFRICA', 'AFRICA', 'AFRICA', 'AMERICA', 'ASIA', 'EUROPE', 'ASIA', 'ASIA', 'EUROPE', 'EUROPE', 'AMERICA'] AS regions,
+toInteger(floor(25*rand())) AS position, ['STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO'] AS types1, ['ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED'] AS types2, ['TIN', 'NICKEL', 'BRASS', 'STEEL', 'COPPER'] AS types3, toInteger(floor(6*rand())) AS pos1, toInteger(floor(5*rand())) AS pos2, toInteger(floor(5*rand())) AS pos3 
+WITH types1[pos1] + ' ' + types2[pos2] + ' ' + types3[pos3]  AS type, nations[position] AS selected_nation, regions[position] as region
+MATCH (p:PART), (s:SUPPLIER), (l:LINEITEM), (o:ORDERS), (c:CUSTOMER), (r:REGION), (n1:NATION), (n2:NATION)
+MATCH (r:REGION)<-[:NATION_REGION]-(n2:NATION)<-[:SUPPLIER_NATION]-(s:SUPPLIER)-[:PARTSUPP_SUPPLIER]-(ps:PARTSUPP)-[PARTSUPP_PART]->(p:PART), (ps:PARTSUPP)<-[:LINEITEM_PARTSUPP]-(l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n1:NATION)
+WHERE r.r_name = region
+  AND o.o_orderdate >= date('1995-01-01')
+  AND o.o_orderdate < date('1997-01-01')
+  AND p.p_type = type
+WITH l.l_shipdate.year AS o_year, 
+     l.l_extendedprice * (1 - l.l_discount) AS volume,
+     n2.n_name AS nation,
+     selected_nation
+WITH o_year, SUM(CASE WHEN nation = selected_nation THEN volume ELSE 0 end)/SUM(volume) AS mkt_share
+RETURN o_year, mkt_share
+ORDER BY o_year
+
