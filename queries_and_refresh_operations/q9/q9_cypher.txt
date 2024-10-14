@@ -1,0 +1,63 @@
+###### Parameters
+
+p.p_name
+
+
+##### relational semantics
+
+WITH ['almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow'] AS colors,
+toInteger(floor(80*rand())) AS position
+WITH colors[position] AS color
+MATCH (p:PART), (s:SUPPLIER), (l:LINEITEM), (ps:PARTSUPP), (o:ORDERS), (n:NATION)
+WHERE s.s_suppkey = l.l_suppkey
+  AND ps.ps_suppkey = l.l_suppkey
+  AND ps.ps_partkey = l.l_partkey
+  AND p.p_partkey = l.l_partkey
+  AND o.o_orderkey = l.l_orderkey
+  AND s.s_nationkey = n.n_nationkey
+  AND p.p_name CONTAINS color
+WITH n.n_name AS nation, 
+     o.o_orderdate.year AS o_year, 
+     SUM(l.l_extendedprice * (1 - l.l_discount) - ps.ps_supplycost * l.l_quantity) AS sum_profit
+RETURN nation, o_year, sum_profit
+ORDER BY nation, o_year DESC
+
+
+
+
+
+##### mixed semantics
+
+WITH ['almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow'] AS colors,
+toInteger(floor(80*rand())) AS position
+WITH colors[position] AS color
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP), (s:SUPPLIER)-[:SUPPLIER_NATION]->(n:NATION),
+      (p:PART), (o:ORDERS)
+WHERE ps.ps_suppkey = s.s_suppkey
+  AND ps.ps_partkey = p.p_partkey
+  AND l.l_orderkey = o.o_orderkey
+  AND p.p_name CONTAINS color
+WITH n.n_name AS nation, 
+     toString(o.o_orderdate.year) AS o_year, 
+     SUM(l.l_extendedprice * (1 - l.l_discount) - ps.ps_supplycost * l.l_quantity) AS sum_profit
+RETURN nation, o_year, sum_profit
+ORDER BY nation, o_year DESC
+
+
+
+
+
+
+##### graph semantics
+
+WITH ['almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow'] AS colors,
+toInteger(floor(80*rand())) AS position
+WITH colors[position] AS color
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s:SUPPLIER)-[:SUPPLIER_NATION]->(n:NATION),
+      (ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART), (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)
+WHERE p.p_name CONTAINS color
+WITH n.n_name AS nation, 
+     toString(o.o_orderdate.year) AS o_year, 
+     SUM(l.l_extendedprice * (1 - l.l_discount) - ps.ps_supplycost * l.l_quantity) AS sum_profit
+RETURN nation, o_year, sum_profit
+ORDER BY nation, o_year DESC
