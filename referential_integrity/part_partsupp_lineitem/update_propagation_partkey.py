@@ -130,7 +130,7 @@ def main():
     is_semirelational_model = False
     is_graph_model = False
 
-    chain = "SUPPLIER -> PARTSUPP -> LINEITEM"
+    chain = "PART -> PARTSUPP -> LINEITEM"
 
     #local bolt and http port, etc:
     local_bolt = <local_bolt>
