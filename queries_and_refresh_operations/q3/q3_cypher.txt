@@ -1,0 +1,72 @@
+###### Parameters
+
+c.c_mktsegment
+o_orderdate
+l_shipdate
+
+
+##### relational semantics
+
+
+WITH ['BUILDING', 'AUTOMOBILE', 'MACHINERY', 'HOUSEHOLD', 'FURNITURE'] AS segments
+WITH segments[toInteger(floor(5*rand()))] AS segment, date('1995-03-01') + duration('P'+toString(toInteger(floor((rand())*30)))+'D') AS selected_date
+MATCH (o:ORDERS), (c:CUSTOMER), (l:LINEITEM)
+WHERE 
+  c.c_mktsegment = segment
+  AND o.o_custkey = c.c_custkey
+  AND l.l_orderkey = o.o_orderkey
+  AND o.o_orderdate < selected_date
+  AND l.l_shipdate > selected_date
+WITH l.l_orderkey AS orderkey, 
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue, 
+     o.o_orderdate AS orderdate, 
+     o.o_shippriority AS shippriority
+RETURN orderkey, orderdate, shippriority, revenue
+ORDER BY revenue DESC, orderdate
+
+
+
+
+
+##### mixed semantics
+
+
+WITH ['BUILDING', 'AUTOMOBILE', 'MACHINERY', 'HOUSEHOLD', 'FURNITURE'] AS segments
+WITH segments[toInteger(floor(5*rand()))] AS segment, date('1995-03-01') + duration('P'+toString(toInteger(floor((rand())*30)))+'D') AS selected_date
+MATCH (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER), (l:LINEITEM)
+WHERE 
+  c.c_mktsegment = segment
+  AND l.l_orderkey = o.o_orderkey
+  AND o.o_orderdate < selected_date
+  AND l.l_shipdate > selected_date
+WITH l.l_orderkey AS orderkey, 
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue, 
+     o.o_orderdate AS orderdate, 
+     o.o_shippriority AS shippriority
+RETURN orderkey, orderdate, shippriority, revenue
+ORDER BY revenue DESC, orderdate
+
+
+
+
+##### graph semantics
+
+
+WITH ['BUILDING', 'AUTOMOBILE', 'MACHINERY', 'HOUSEHOLD', 'FURNITURE'] AS segments
+WITH segments[toInteger(floor(5*rand()))] AS segment, date('1995-03-01') + duration('P'+toString(toInteger(floor((rand())*30)))+'D') AS selected_date
+MATCH (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)
+WHERE 
+  c.c_mktsegment = segment
+  AND o.o_orderdate < selected_date
+  AND l.l_shipdate > selected_date
+WITH l.l_orderkey AS orderkey, 
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue, 
+     o.o_orderdate AS orderdate, 
+     o.o_shippriority AS shippriority
+RETURN orderkey, orderdate, shippriority, revenue
+ORDER BY revenue DESC, orderdate
+
+
+
+
+
