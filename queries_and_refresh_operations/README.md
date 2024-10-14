@@ -19,13 +19,13 @@ The following charts show the results for the execution of the refresh operation
 
 <ins>Results for TPC-H small (sf=0.01) shown for time logarithmically scaled:</ins><br>
 <p align="center" width="100%">
-<img src="./images/rf_small.png" alt="TPC-H refresh operation results on TPC-H small" width ="40%"/>
+<img src="./images/rf_small.png" alt="TPC-H refresh operation results on TPC-H small" width ="30%"/>
 </p>
 <ins>Results for TPC-H medium (sf=0.1) shown for time logarithmically scaled:</ins><br>
 <p align="center" width="100%">
-<img src="./images/rf_medium.png" alt="TPC-H refresh operation results on TPC-H medium" width ="40%"/>
+<img src="./images/rf_medium.png" alt="TPC-H refresh operation results on TPC-H medium" width ="30%"/>
 </p>
 <ins>Results for TPC-H large (sf=1) shown for time logarithmically scaled:</ins><br>
 <p align="center" width="100%">
-<img src="./images/rf_large.png" alt="TPC-H refresh operation results on TPC-H large" width ="40%"/>
+<img src="./images/rf_large.png" alt="TPC-H refresh operation results on TPC-H large" width ="30%"/>
 </p>
