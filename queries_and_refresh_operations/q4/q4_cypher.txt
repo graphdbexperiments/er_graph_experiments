@@ -1,0 +1,57 @@
+###### Parameters
+
+o.o_orderdate 
+
+
+##### relational semantics
+
+WITH toInteger(1+floor(9*rand())) AS month, toInteger(1993+floor(4*rand())) AS year
+MATCH (o:ORDERS), (l:LINEITEM)
+WHERE o.o_orderkey = l.l_orderkey
+  AND o.o_orderdate >= date(year + '-' + month + '-01')
+  AND o.o_orderdate < date(year + '-' + (month + 3) + '-01')
+  AND l.l_commitdate < l.l_receiptdate
+WITH o.o_orderpriority AS orderpriority, COUNT(DISTINCT(o)) AS order_count
+RETURN orderpriority, order_count
+ORDER BY orderpriority
+
+
+
+
+
+
+
+##### mixed semantics
+
+WITH toInteger(1+floor(9*rand())) AS month, toInteger(1993+floor(4*rand())) AS year
+MATCH (o:ORDERS), (l:LINEITEM)
+WHERE o.o_orderkey = l.l_orderkey
+  AND o.o_orderdate >= date(year + '-' + month + '-01')
+  AND o.o_orderdate < date(year + '-' + (month + 3) + '-01')
+  AND l.l_commitdate < l.l_receiptdate
+WITH o.o_orderpriority AS orderpriority, COUNT(DISTINCT(o)) AS order_count
+RETURN orderpriority, order_count
+ORDER BY orderpriority
+
+
+
+
+
+##### graph semantics
+
+WITH toInteger(1+floor(9*rand())) AS month, toInteger(1993+floor(4*rand())) AS year
+MATCH (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)
+WHERE o.o_orderdate >= date(year + '-' + month + '-01')
+  AND o.o_orderdate < date(year + '-' + (month + 3) + '-01')
+  AND l.l_commitdate < l.l_receiptdate
+WITH o.o_orderpriority AS orderpriority, COUNT(DISTINCT(o)) AS order_count
+RETURN orderpriority, order_count
+ORDER BY orderpriority
+
+
+
+
+
+
+
+
