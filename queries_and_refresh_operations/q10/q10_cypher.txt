@@ -1,0 +1,75 @@
+###### Parameters
+
+o.o_orderdate
+
+
+##### relational semantics
+
+WITH date('1993-02-01') + Duration({months: toInteger(floor(23*rand()))}) AS start_date
+WITH start_date, start_date + Duration({months: 3}) AS end_date
+MATCH (c:CUSTOMER), (o:ORDERS), (l:LINEITEM), (n:NATION)
+WHERE c.c_custkey = o.o_custkey
+  AND l.l_orderkey = o.o_orderkey
+  AND o.o_orderdate >= start_date
+  AND o.o_orderdate < end_date
+  AND l.l_returnflag = 'R'
+  AND c.c_nationkey = n.n_nationkey
+WITH c.c_custkey AS custkey,
+     c.c_name AS name,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue,
+     c.c_acctbal AS acctbal,
+     n.n_name AS nation,
+     c.c_address AS address,
+     c.c_phone AS phone,
+     c.c_comment AS comment
+RETURN custkey, name, revenue, acctbal, nation, address, phone, comment
+ORDER BY revenue DESC
+
+
+
+
+
+##### mixed semantics
+
+WITH date('1993-02-01') + Duration({months: toInteger(floor(23*rand()))}) AS start_date
+WITH start_date, start_date + Duration({months: 3}) AS end_date
+MATCH (l:LINEITEM), (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n:NATION)
+WHERE l.l_orderkey = o.o_orderkey
+  AND o.o_orderdate >= start_date
+  AND o.o_orderdate < end_date
+  AND l.l_returnflag = 'R'
+WITH c.c_custkey AS custkey,
+     c.c_name AS name,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue,
+     c.c_acctbal AS acctbal,
+     n.n_name AS nation,
+     c.c_address AS address,
+     c.c_phone AS phone,
+     c.c_comment AS comment
+RETURN custkey, name, revenue, acctbal, nation, address, phone, comment
+ORDER BY revenue DESC
+
+
+
+
+
+##### graph semantics
+
+
+WITH date('1993-02-01') + Duration({months: toInteger(floor(23*rand()))}) AS start_date
+WITH start_date, start_date + Duration({months: 3}) AS end_date
+MATCH (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)-[:CUSTOMER_NATION]->(n:NATION)
+WHERE o.o_orderdate >= start_date
+  AND o.o_orderdate < end_date
+  AND l.l_returnflag = 'R'
+WITH c.c_custkey AS custkey,
+     c.c_name AS name,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue,
+     c.c_acctbal AS acctbal,
+     n.n_name AS nation,
+     c.c_address AS address,
+     c.c_phone AS phone,
+     c.c_comment AS comment
+RETURN custkey, name, revenue, acctbal, nation, address, phone, comment
+ORDER BY revenue DESC
+
