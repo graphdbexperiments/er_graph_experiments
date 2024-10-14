@@ -1,0 +1,93 @@
+###### Parameters
+
+l.l_shipdate
+
+
+##### relational semantics
+
+
+
+MATCH (l:LINEITEM)
+WHERE l.l_shipdate <= date('1998-12-01') - duration('P'+toString(toInteger(floor((1+rand())*60)))+'D')
+WITH l.l_returnflag AS returnflag,
+     l.l_linestatus AS linestatus,
+     sum(l.l_quantity) AS sum_qty,
+     sum(l.l_extendedprice) AS sum_base_price,
+     sum(l.l_extendedprice * (1 - l.l_discount)) AS sum_disc_price,
+     sum(l.l_extendedprice * (1 - l.l_discount) * (1 + l.l_tax)) AS sum_charge,
+     avg(l.l_quantity) AS avg_qty,
+     avg(l.l_extendedprice) AS avg_price,
+     avg(l.l_discount) AS avg_disc,
+     COUNT(*) AS count_order
+RETURN returnflag,
+       linestatus,
+       sum_qty,
+       sum_base_price,
+       sum_disc_price,
+       sum_charge,
+       avg_qty,
+       avg_price,
+       avg_disc,
+       count_order
+ORDER BY returnflag, linestatus;
+
+
+
+##### mixed semantics
+
+
+MATCH (l:LINEITEM)
+WHERE l.l_shipdate <= date('1998-12-01') - duration('P'+toString(toInteger(floor((1+rand())*60)))+'D')
+WITH l.l_returnflag AS returnflag,
+     l.l_linestatus AS linestatus,
+     sum(l.l_quantity) AS sum_qty,
+     sum(l.l_extendedprice) AS sum_base_price,
+     sum(l.l_extendedprice * (1 - l.l_discount)) AS sum_disc_price,
+     sum(l.l_extendedprice * (1 - l.l_discount) * (1 + l.l_tax)) AS sum_charge,
+     avg(l.l_quantity) AS avg_qty,
+     avg(l.l_extendedprice) AS avg_price,
+     avg(l.l_discount) AS avg_disc,
+     COUNT(*) AS count_order
+RETURN returnflag,
+       linestatus,
+       sum_qty,
+       sum_base_price,
+       sum_disc_price,
+       sum_charge,
+       avg_qty,
+       avg_price,
+       avg_disc,
+       count_order
+ORDER BY returnflag, linestatus;
+
+
+
+##### graph semantics
+
+
+MATCH (l:LINEITEM)
+WHERE l.l_shipdate <= date('1998-12-01') - duration('P'+toString(toInteger(floor((1+rand())*60)))+'D')
+WITH l.l_returnflag AS returnflag,
+     l.l_linestatus AS linestatus,
+     sum(l.l_quantity) AS sum_qty,
+     sum(l.l_extendedprice) AS sum_base_price,
+     sum(l.l_extendedprice * (1 - l.l_discount)) AS sum_disc_price,
+     sum(l.l_extendedprice * (1 - l.l_discount) * (1 + l.l_tax)) AS sum_charge,
+     avg(l.l_quantity) AS avg_qty,
+     avg(l.l_extendedprice) AS avg_price,
+     avg(l.l_discount) AS avg_disc,
+     COUNT(*) AS count_order
+RETURN returnflag,
+       linestatus,
+       sum_qty,
+       sum_base_price,
+       sum_disc_price,
+       sum_charge,
+       avg_qty,
+       avg_price,
+       avg_disc,
+       count_order
+ORDER BY returnflag, linestatus;
+
+
+
