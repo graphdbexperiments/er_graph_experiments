@@ -1,4 +1,4 @@
-# Experiments concerning referential integrity management in E/R graphs
+# Experiments concerning referential integrity management in E/R graphs 
 
 This folder contains files for the experimental set up enabling users to recreate the experiments. In addition, we have provided the results of these experiments we conducted in our research.
 
