@@ -52,5 +52,5 @@ The benefits of our modelling approach with respect to referential integrity man
 
 ### 3.) Benchmark Queries and Refresh Operations
 
-We investigate the effect of the three different graph modelling approaches on query execution, insertion and deletion. More precisely, in our experiments we have translated TPC-H benchmark queries and the Refresh Operations into Cypher and executed them on our graph translations of TPC-H for different scaling factors and in addition, compared their performance to MySQL.
+We investigate the effect of the three different graph modelling approaches on query execution, insertion and deletion. More precisely, in our experiments we have translated TPC-H benchmark queries and the Refresh Operations into Cypher and executed them on our graph translations of TPC-H for different scaling factors in Neo4j. In addition, we compared their performance to MySQL.
 
