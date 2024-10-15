@@ -46,10 +46,10 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 # Execute experiments
 
 
-host = "localhost"
-user = "root"
-password = "Pskav752$mysql"
-database = "large"
+host = <local_host>
+user = <user>
+password = <password>
+database = <local_db>
 
 
 my_db = mysql.connector.connect(user = user, password = password, host = host, database = database)
