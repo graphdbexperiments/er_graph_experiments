@@ -46,10 +46,10 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 # Execute experiments
 
 
-host = "localhost"
-user = "root"
-password = "Pskav752$mysql"
-database = "small"
+host = <local_host>
+user = <user>
+password = <password>
+database = <local_db>
 
 
 my_db_conncetion = mysql.connector.connect(user = user, password = password, host = host, database = database)
@@ -60,7 +60,7 @@ my_cursor = my_db_conncetion.cursor(buffered=True)
 
 # Experiment setting
 
-scaling_factor = 0.01
+scaling_factor = 1
 
 query_number = 10
 
