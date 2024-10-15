@@ -1,0 +1,150 @@
+# parameters
+
+n2.n_name, r_name, p_type
+
+# query with flexible parameters
+
+
+SET @nationRegions = JSON_ARRAY(
+    'AFRICA',        -- ALGERIA
+    'AMERICA',       -- ARGENTINA
+    'AMERICA',       -- BRAZIL
+    'AMERICA',       -- CANADA
+    'AFRICA',        -- EGYPT
+    'AFRICA',        -- ETHIOPIA
+    'EUROPE',        -- FRANCE
+    'EUROPE',        -- GERMANY
+    'ASIA',          -- INDIA
+    'ASIA',          -- INDONESIA
+    'ASIA',          -- IRAN
+    'ASIA',          -- IRAQ
+    'ASIA',          -- JAPAN
+    'ASIA',          -- JORDAN
+    'AFRICA',        -- KENYA
+    'AFRICA',        -- MOROCCO
+    'AFRICA',        -- MOZAMBIQUE
+    'AMERICA',       -- PERU
+    'ASIA',          -- CHINA
+    'EUROPE',        -- ROMANIA
+    'ASIA',          -- SAUDI ARABIA
+    'ASIA',          -- VIETNAM
+    'EUROPE',        -- RUSSIA
+    'EUROPE',        -- UNITED KINGDOM
+    'AMERICA'        -- UNITED STATES
+);
+SET @nations = JSON_ARRAY(
+    'ALGERIA',
+    'ARGENTINA',
+    'BRAZIL',
+    'CANADA',
+    'EGYPT',
+    'ETHIOPIA',
+    'FRANCE',
+    'GERMANY',
+    'INDIA',
+    'INDONESIA',
+    'IRAN',
+    'IRAQ',
+    'JAPAN',
+    'JORDAN',
+    'KENYA',
+    'MOROCCO',
+    'MOZAMBIQUE',
+    'PERU',
+    'CHINA'
+    'ROMANIA',
+    'SAUDI ARABIA',  
+    'VIETNAM',
+    'RUSSIA',
+    'UNITED KINGDOM',
+    'UNITED STATES');
+SET @nationPosition = FLOOR(25*RAND());
+SET @nation = JSON_UNQUOTE(JSON_EXTRACT(@nations, CONCAT('$[', @nationPosition,']')));
+SET @region = JSON_UNQUOTE(JSON_EXTRACT(@nationRegions, CONCAT('$[', @nationPosition,']')));
+SET @types1 = JSON_ARRAY('STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO');
+SET @type1 = JSON_UNQUOTE(JSON_EXTRACT(@types1, CONCAT('$[',FLOOR(5*RAND()),']')));
+SET @types2 = JSON_ARRAY('ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED');
+SET @type2 = JSON_UNQUOTE(JSON_EXTRACT(@types2, CONCAT('$[',FLOOR(4*RAND()),']')));
+SET @types3 = JSON_ARRAY('TIN', 'NICKEL', 'BRASS', 'STEEL', 'COPPER');
+SET @type3 = JSON_UNQUOTE(JSON_EXTRACT(@types3, CONCAT('$[',FLOOR(4*RAND()),']')));
+SET @type = CONCAT(@type1, ' ', @type2, ' ', @type3);
+select
+  o_year,
+  sum(case
+    when nation = @nation then volume
+    else 0
+  end) / sum(volume) as mkt_share
+from
+  (
+    select
+      extract(year from o_orderdate) as o_year,
+      l_extendedprice * (1 - l_discount) as volume,
+      n2.n_name as nation
+    from
+      part,
+      supplier,
+      lineitem,
+      orders,
+      customer,
+      nation n1,
+      nation n2,
+      region
+    where
+      p_partkey = l_partkey
+      and s_suppkey = l_suppkey
+      and l_orderkey = o_orderkey
+      and o_custkey = c_custkey
+      and c_nationkey = n1.n_nationkey
+      and n1.n_regionkey = r_regionkey
+      and r_name = @region
+      and s_nationkey = n2.n_nationkey
+      and o_orderdate between date '1995-01-01' and date '1996-12-31'
+      and p_type = @type
+  ) as all_nations
+group by
+  o_year
+order by
+  o_year;
+
+
+
+# validation query
+
+
+select
+  o_year,
+  sum(case
+    when nation = 'BRAZIL' then volume
+    else 0
+  end) / sum(volume) as mkt_share
+from
+  (
+    select
+      extract(year from o_orderdate) as o_year,
+      l_extendedprice * (1 - l_discount) as volume,
+      n2.n_name as nation
+    from
+      part,
+      supplier,
+      lineitem,
+      orders,
+      customer,
+      nation n1,
+      nation n2,
+      region
+    where
+      p_partkey = l_partkey
+      and s_suppkey = l_suppkey
+      and l_orderkey = o_orderkey
+      and o_custkey = c_custkey
+      and c_nationkey = n1.n_nationkey
+      and n1.n_regionkey = r_regionkey
+      and r_name = 'AMERICA'
+      and s_nationkey = n2.n_nationkey
+      and o_orderdate between date '1995-01-01' and date '1996-12-31'
+      and p_type = 'ECONOMY ANODIZED STEEL'
+  ) as all_nations
+group by
+  o_year
+order by
+  o_year;
