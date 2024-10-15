@@ -24,7 +24,7 @@ The software used to perform the experiments carried out in our research are:
 
 - Python 3.9.13
 
-- My SQL 8.0.0
+- MySQL 8.0.0
 
 
 
