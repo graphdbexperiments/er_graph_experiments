@@ -125,7 +125,7 @@ def main():
 
     # Experiment setting
 
-    factor = 0.01 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
+    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
     is_relational_model = True
     is_semirelational_model = False
     is_graph_model = False
@@ -136,9 +136,9 @@ def main():
     precision = 3
 
     #local bolt and http port, etc:
-    local_bolt = "bolt://localhost:7687"
-    local_pw = "Pskav752$api"
-    local_user = "neo4j"
+    local_bolt = "<local_bolt>"
+    local_pw = "<password>"
+    local_user = <user>
     active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
 
     # Initialise DB
@@ -189,7 +189,7 @@ def main():
 
         ########## Key verification: LINEITEM
 
-        # check if LINEITEM key violated for new values and if not create new node
+        # check if LINEITEM key violated for new values
 
         orderkey = 1
         linenumber = 9
