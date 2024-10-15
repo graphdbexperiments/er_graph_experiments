@@ -1,0 +1,36 @@
+# parameters
+
+
+l_shipdate, l_discount, l_quantity
+
+
+# query with flexible parameters
+
+SET @selectedYear = 1993 + FLOOR(4*RAND());
+SET @startDate = date(CONCAT(@selectedYear, '-01-01'));
+SET @endDate = date(CONCAT(@selectedYear + 1, '-01-01'));
+SET @discount = floor(2+7*rand())/100
+select
+  sum(l_extendedprice * l_discount) as revenue
+from
+  lineitem
+where
+  l_shipdate >= @startDate
+  and l_shipdate < @endDate
+  and l_discount between @discount - 0.01 and @discount + 0.01
+  and l_quantity < floor(24 + 2*rand());
+
+
+
+
+# validation query
+
+select
+  sum(l_extendedprice * l_discount) as revenue
+from
+  lineitem
+where
+  l_shipdate >= date '1994-01-01'
+  and l_shipdate < date '1995-01-01'
+  and l_discount between .06 - 0.01 and .06 + 0.01
+  and l_quantity < 24;
