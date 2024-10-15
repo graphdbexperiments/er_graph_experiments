@@ -137,9 +137,9 @@ def main():
 
 
     #local bolt and http port, etc:
-    local_bolt = "bolt://localhost:7687"
-    local_pw = "Pskav752$api"
-    local_user = "neo4j"
+    local_bolt = "<local_bolt>"
+    local_pw = "<password>"
+    local_user = <user>
     active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
 
     # Initialise DB
