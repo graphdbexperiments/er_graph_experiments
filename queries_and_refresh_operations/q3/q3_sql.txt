@@ -1,0 +1,65 @@
+# parameters
+
+c_mktsegment, o_orderdate, l_shipdate
+
+
+# query with flexible parameters
+
+SET @segments = JSON_ARRAY('AUTOMOBILE', 'BUILDING', 'FURNITURE', 'MACHINERY', 'HOUSEHOLD');
+SET @segmentPosition = FLOOR(4*RAND());
+SET @segment = JSON_UNQUOTE(JSON_EXTRACT(@segments, CONCAT('$[', @segmentPosition,']')));
+SET @selectedDay = 1 + FLOOR(30*RAND());
+SET @selectedDate = date(CONCAT('1995-03-', @selectedDay));
+
+select
+l_orderkey,
+sum(l_extendedprice*(1-l_discount)) as revenue,
+o_orderdate,
+o_shippriority
+from
+customer,
+orders,
+lineitem
+where
+c_mktsegment = @segment
+and c_custkey = o_custkey
+and l_orderkey = o_orderkey
+and o_orderdate < @selectedDate
+and l_shipdate > @selectedDate
+group by
+l_orderkey,
+o_orderdate,
+o_shippriority
+order by
+revenue desc,
+o_orderdate;
+
+
+
+
+
+# validation query
+
+
+select
+l_orderkey,
+sum(l_extendedprice*(1-l_discount)) as revenue,
+o_orderdate,
+o_shippriority
+from
+customer,
+orders,
+lineitem
+where
+c_mktsegment = 'BUILDING'
+and c_custkey = o_custkey
+and l_orderkey = o_orderkey
+and o_orderdate < date('1995-03-15')
+and l_shipdate > date('1995-03-15')
+group by
+l_orderkey,
+o_orderdate,
+o_shippriority
+order by
+revenue desc,
+o_orderdate;
