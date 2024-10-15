@@ -1,0 +1,61 @@
+# parameters
+
+o_orderdate
+
+
+# query with flexible parameters
+SET @selectedYear = FLOOR(1993 + 4*RAND());
+SET @selectedMonth = FLOOR(1+9*RAND());
+SET @startDate = date(CONCAT(@selectedYear, '-',@selectedMonth,'-01'));
+SET @endDate = date(CONCAT(@selectedYear, '-',@selectedMonth + 3,'-01'));
+
+select
+o_orderpriority,
+count(*) as order_count
+from
+orders
+where
+o_orderdate >= date '[DATE]'
+and o_orderdate < date '[DATE]' + interval '3' month
+and exists (
+select
+*
+from
+lineitem
+where
+l_orderkey = o_orderkey
+and l_commitdate < l_receiptdate
+)
+group by
+o_orderpriority
+order by
+o_orderpriority;
+
+
+
+
+
+# validation query
+
+
+select
+o_orderpriority,
+count(*) as order_count
+from
+orders
+where
+o_orderdate >= date('1993-07-01')
+and o_orderdate < date('1993-10-01')
+and exists (
+select
+*
+from
+lineitem
+where
+l_orderkey = o_orderkey
+and l_commitdate < l_receiptdate
+)
+group by
+o_orderpriority
+order by
+o_orderpriority;
