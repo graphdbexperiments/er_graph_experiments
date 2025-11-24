@@ -28,7 +28,7 @@ The software used to perform the experiments carried out in our research are:
 
 
 
-The TPC-H benchmark is provided on the official [TPC website](https://www.tpc.org/tpch/). 
+The TPC-H benchmark and generator is provided on the official [TPC website](https://www.tpc.org/tpch/). 
 
 
 ## Experiments:
