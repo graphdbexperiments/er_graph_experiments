@@ -101,6 +101,37 @@ RETURN pattern
 For details around the experiments conducted in our research we refer to the respective folders that contain information on the experiments around [Entity Integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity) and [Referential Integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity) management in E/R graphs.
 
 
+
+### Referential Integrity Experiments
+
+To run the experiments related to referential integrity the user needs to navigate to the [respective foler](https://github.com/GraphDatabaseExperiments/entity_relationship_graphs/tree/main/referential_integrity) and depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
+
+First the credentials to establish a connection to Neo4j have to specified under:
+
+```
+    local_bolt = <local_bolt>
+    local_pw = <password>
+    local_user = "neo4j"
+```
+
+After that the experiment settings can be found under:
+
+```
+    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
+    percentage_to_update = [0.2, 0.4, 0.6, 0.8, 1]
+    is_relational_model = True
+    is_semirelational_model = False
+    is_graph_model = False
+
+    runs = 20
+
+    outliers = 5
+```
+
+Here, depending on dataset size the variable *factor* will have to be set to either 0.01, 0.1 or 1. The list *percentage_to_update* represents the amount of records for the respective experiment scenario that are being updated. For each value in the list the experiment will be run multiple times according to the amount specified under *runs*. Exactly one of the three boolean variables *is_relational_model*, *is_semirelational_model* and *is_graph_model* will have to be set to True and the other two to False to specify which graph semantics we use for the experiment. Finally, the variable *outliers* determines the amount of measured results on the top and bottom end of results that are disregarded when determining average values.
+
+
+
 ## How to run Python and Neo4j using Neo4j Python Driver: 
 
 For the experiments on the TPC-H datasets we used Neo4j Desktop and Python and connected to a Neo4j database using the Neo4j Python Driver. For installation instructions and some sample code fragments we refer the user to the [Neo4j Python Driver Manual](https://neo4j.com/docs/api/python-driver/current/). For the Python files used to conduct the experiments we refer the reader to the corresponding folders in this repository.
