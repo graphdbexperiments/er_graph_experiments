@@ -111,11 +111,7 @@ For details around the experiments conducted in our research we refer to the res
 
 ### Entity Integrity Experiments
 
-The scripts to execute the experiments concering entity integrity are located in a [separate folder](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity/scripts).
-
-### Referential Integrity Experiments
-
-To run the experiments related to referential integrity the user needs to navigate to the [respective foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity/scripts) and depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
+The scripts to execute the experiments concering entity integrity are located in a [separate folder](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity/scripts). Depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
 
 First the credentials to establish a connection to Neo4j have to specified under:
 
@@ -124,6 +120,35 @@ First the credentials to establish a connection to Neo4j have to specified under
     local_pw = <password>
     local_user = "neo4j"
 ```
+
+After that the experiment settings can be found under:
+
+```
+    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
+    
+    is_relational_model = False 
+    is_semirelational_model = False
+    is_graph_model = True
+    active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
+
+    runs = 20
+
+    outliers = 5
+
+    with_index = False
+
+    precision = 3
+```
+
+Here, depending on dataset size the variable *factor* will have to be set to either 0.01, 0.1 or 1. The experiment will be run multiple times according to the amount specified under *runs*. Exactly one of the three boolean variables *is_relational_model*, *is_semirelational_model* and *is_graph_model* will have to be set to True and the other two to False to specify which graph semantics we use for the experiment. The variable *outliers* determines the amount of measured results on the top and bottom end of results that are disregarded when determining average values and *precision* determines how accurately we measure the verification of E/R keys. Finally, two scenarios can be chosen for each experiment setting. Either create a constraint on key attributes for respective nodes with associated index or not. We note that this is not an option under graph semantics. This can be adjusted through *with_index*.
+
+
+
+### Referential Integrity Experiments
+
+To run the experiments related to referential integrity the user needs to navigate to the [respective foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity/scripts) and depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
+
+Credentials to connect to a Neo4j instance need to be specified as before.
 
 After that the experiment settings can be found under:
 
@@ -139,7 +164,7 @@ After that the experiment settings can be found under:
     outliers = 5
 ```
 
-Here, depending on dataset size the variable *factor* will have to be set to either 0.01, 0.1 or 1. The list *percentage_to_update* represents the amount of records for the respective experiment scenario that are being updated. For each value in the list the experiment will be run multiple times according to the amount specified under *runs*. Exactly one of the three boolean variables *is_relational_model*, *is_semirelational_model* and *is_graph_model* will have to be set to True and the other two to False to specify which graph semantics we use for the experiment. Finally, the variable *outliers* determines the amount of measured results on the top and bottom end of results that are disregarded when determining average values.
+Setttings of parameters are mostly in line with experiments for entity integrity. In addition, the list *percentage_to_update* represents the amount of records for the respective experiment scenario that are being updated. For each value in the list the experiment will be run multiple times according to the amount specified under *runs*. There is no need to specify the precision we use to measure results due to the longer execution time of experiments in this case.
 
 
 
