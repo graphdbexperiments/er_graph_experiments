@@ -123,23 +123,39 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 
 def main():
 
-    # Experiment setting
+
+    # Establish connection to Neo4j instance
+    
+    local_bolt = <local_bolt>
+    local_pw = <password>
+    local_user = "neo4j"
+
+
+    ###############################
+    #                             #
+    #     Experiment settings     #
+    #                             #
+    ###############################   
 
     factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
-    is_relational_model = True
+    
+    # exactly one of the three boolean variables needs to be set to True to determine which semantics is used
+    is_relational_model = False 
     is_semirelational_model = False
-    is_graph_model = False
+    is_graph_model = True
 
+    # amount of runs for experiments with one dedicated percentage value of updates
+    runs = 20
+
+    # amount of bottom and top results based on amount of runs that will be disregarded for average caluclation
+    outliers = 5
+
+    # specify experiment setting: whether or not to create constraint with associated index on key properties of PARTSUPP / LINEITEM nodes (not possible under graph semantics)
     with_index = False
 
-
+    # specify precision for measuring time to validate E/R key
     precision = 3
 
-    #local bolt and http port, etc:
-    local_bolt = "<local_bolt>"
-    local_pw = "<password>"
-    local_user = <user>
-    active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
 
     # Initialise DB
     new_db = gdbms_test(local_bolt, local_user, local_pw, active_database)
@@ -150,7 +166,6 @@ def main():
 
     average_db_hits = []
     average_time = []
-
 
     key = "LINEITEM"
 
@@ -167,10 +182,6 @@ def main():
 
         
     # perform experiment multiple times
-
-    runs = 20
-
-    outliers = 5
 
     for i in range(0, runs):
         
@@ -260,6 +271,7 @@ def main():
 
 
 main()
+
 
 
 
