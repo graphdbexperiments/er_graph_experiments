@@ -78,6 +78,14 @@ Once all is set up the database should look as follows.
 
 
 
+
+## How to run Python and Neo4j using Neo4j Python Driver: 
+
+For the experiments on the TPC-H datasets we used Neo4j Desktop and Python and connected to a Neo4j database using the Neo4j Python Driver. For installation instructions and some sample code fragments we refer the user to the [Neo4j Python Driver Manual](https://neo4j.com/docs/api/python-driver/current/). For the Python files used to conduct the experiments we refer the reader to the corresponding folders in this repository.
+
+
+
+
 ## First experiments using Neo4j:
 
 Once all required csv files are imported and the graph translation of TPC-H is completed we are able to run the first experiments. Here we outline the Cypher statements used for the [Verification of E/R keys](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity) for TPC-H modelled adhering to graph semantics.
@@ -131,9 +139,5 @@ After that the experiment settings can be found under:
 Here, depending on dataset size the variable *factor* will have to be set to either 0.01, 0.1 or 1. The list *percentage_to_update* represents the amount of records for the respective experiment scenario that are being updated. For each value in the list the experiment will be run multiple times according to the amount specified under *runs*. Exactly one of the three boolean variables *is_relational_model*, *is_semirelational_model* and *is_graph_model* will have to be set to True and the other two to False to specify which graph semantics we use for the experiment. Finally, the variable *outliers* determines the amount of measured results on the top and bottom end of results that are disregarded when determining average values.
 
 
-
-## How to run Python and Neo4j using Neo4j Python Driver: 
-
-For the experiments on the TPC-H datasets we used Neo4j Desktop and Python and connected to a Neo4j database using the Neo4j Python Driver. For installation instructions and some sample code fragments we refer the user to the [Neo4j Python Driver Manual](https://neo4j.com/docs/api/python-driver/current/). For the Python files used to conduct the experiments we refer the reader to the corresponding folders in this repository.
 
   
