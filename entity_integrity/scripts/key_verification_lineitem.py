@@ -143,6 +143,7 @@ def main():
     is_relational_model = False 
     is_semirelational_model = False
     is_graph_model = True
+    active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
 
     # amount of runs for experiments with one dedicated percentage value of updates
     runs = 20
@@ -271,6 +272,7 @@ def main():
 
 
 main()
+
 
 
 
