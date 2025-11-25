@@ -33,7 +33,7 @@ The TPC-H benchmark and generator is provided on the official [TPC website](http
 
 ## Experiments:
 
-The experiments in our research on E/R keys are outlined in the following:
+The experiments in our research on E/R graphs are outlined in the following:
 
 - 1.) [How can E/R keys improve entity integrity management?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity)
 - 2.) [How can E/R keys improve referential integrity management?](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity)
