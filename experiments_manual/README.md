@@ -109,6 +109,9 @@ RETURN pattern
 For details around the experiments conducted in our research we refer to the respective folders that contain information on the experiments around [Entity Integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity) and [Referential Integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity) management in E/R graphs.
 
 
+### Entity Integrity Experiments
+
+The scripts to execute the experiments concering entity integrity are located in a [separate folder](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity/scripts).
 
 ### Referential Integrity Experiments
 
