@@ -120,36 +120,50 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 
 # main function
 
+
 def main():
 
-    # Experiment setting
-
-    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
-    percentage_to_update = ['single', 0.001, 0.01, 0.1] # enter 'single' for single value update
-    #percentage_to_update = [0.2, 0.4, 0.6, 0.8, 1]
-    is_relational_model = True
-    is_semirelational_model = False
-    is_graph_model = False
-
-    chain = "ORDERS -> LINEITEM"
-
-    #local bolt and http port, etc:
+    # Establish connection to Neo4j instance
+    
     local_bolt = <local_bolt>
     local_pw = <password>
-    local_user = <local_user>
-    active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
+    local_user = "neo4j"
+
+
+    ###############################
+    #                             #
+    #     Experiment settings     #
+    #                             #
+    ###############################   
+
+    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
+    percentage_to_update = [0.2, 0.4, 0.6, 0.8, 1] # percent of dedicated records to be updated
+    
+    # exactly one of the three boolean variables needs to be set to True to determine which semantics is used
+    is_relational_model = False 
+    is_semirelational_model = False
+    is_graph_model = True
+
+    # amount of runs for experiments with one dedicated percentage value of updates
+    runs = 20
+
+    # amount of bottom and top results based on amount of runs that will be disregarded for average caluclation
+    outliers = 5
+
+
+
+    
+    chain = "ORDERS -> LINEITEM"
 
     # Initialise DB
-    new_db = gdbms_test(local_bolt, local_user, local_pw, active_database)
+    new_db = gdbms_test(local_bolt, local_user, local_pw)
 
     # Initialise db_hits and time update propagation
-    db_hits = [[], [], [], []]
-    times = [[], [], [], []]
+    db_hits = [[], [], [], [], []]
+    times = [[], [], [], [], []]
 
-    average_db_hits = [[], [], [], []]
-    average_time = [[], [], [], []]
-
-
+    average_db_hits = [[], [], [], [], []]
+    average_time = [[], [], [], [], []]
 
 
     # current date and time
@@ -311,6 +325,7 @@ def main():
 
 
 main()
+
 
 
 
