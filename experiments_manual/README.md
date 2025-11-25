@@ -112,7 +112,7 @@ For details around the experiments conducted in our research we refer to the res
 
 ### Referential Integrity Experiments
 
-To run the experiments related to referential integrity the user needs to navigate to the [respective foler](https://github.com/GraphDatabaseExperiments/entity_relationship_graphs/tree/main/referential_integrity) and depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
+To run the experiments related to referential integrity the user needs to navigate to the [respective foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity/scripts) and depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
 
 First the credentials to establish a connection to Neo4j have to specified under:
 
