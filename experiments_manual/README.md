@@ -85,8 +85,9 @@ For the experiments on the TPC-H datasets we used Neo4j Desktop and Python and c
 
 
 
+## Run E/R Graph Experiments:
 
-## First experiments using Neo4j:
+### 0. First experiments using Neo4j:
 
 Once all required csv files are imported and the graph translation of TPC-H is completed we are able to run the first experiments. Here we outline the Cypher statements used for the [Verification of E/R keys](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity) for TPC-H modelled adhering to graph semantics.
 
@@ -109,7 +110,7 @@ RETURN pattern
 For details around the experiments conducted in our research we refer to the respective folders that contain information on the experiments concerning [entity integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity), [referential integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity) management in E/R graphs and the [processing of query workloads and refresh operations](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations).
 
 
-### Entity Integrity Experiments
+### 1. Entity Integrity Experiments
 
 The scripts to execute the experiments concering entity integrity are located in a [separate folder](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity/scripts). Depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
 
@@ -144,7 +145,7 @@ Here, depending on dataset size the variable *factor* will have to be set to eit
 
 
 
-### Referential Integrity Experiments
+### 2. Referential Integrity Experiments
 
 To run the experiments related to referential integrity the user needs to navigate to the [respective foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity/scripts) and depending on the experiment scenario execute the corresponding python script. Before executing either python script the following is required. In each script the parameters that need adjusting are found in the main method.
 
@@ -167,5 +168,8 @@ After that the experiment settings can be found under:
 Setttings of parameters are mostly in line with experiments for entity integrity. In addition, the list *percentage_to_update* represents the amount of records for the respective experiment scenario that are being updated. For each value in the list the experiment will be run multiple times according to the amount specified under *runs*. There is no need to specify the precision we use to measure results due to the longer execution time of experiments in this case.
 
 
+### 3. Benchmark Query and Refresh Operations Experiments
+
+To run these experiments the user needs to execute the python scripts in the [corresponding foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations/scripts).
 
   
