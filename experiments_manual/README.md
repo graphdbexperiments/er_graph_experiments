@@ -90,7 +90,7 @@ For the experiments on the TPC-H datasets we used Neo4j Desktop and Python and c
 
 Once all required csv files are imported and the graph translation of TPC-H is completed we are able to run the first experiments. Here we outline the Cypher statements used for the [Verification of E/R keys](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity) for TPC-H modelled adhering to graph semantics.
 
-The following query illustrates the validity of the E/R key on PARTSUPP nodes:
+The following query illustrates the validation of the E/R key on PARTSUPP nodes:
 
 ```
 MATCH pattern1 = (s:SUPPLIER)<-[]-(ps1:PARTSUPP)-[]->(p:PART), pattern2 = (s:SUPPLIER)<-[]-(ps2:PARTSUPP)-[]->(p:PART)
@@ -106,7 +106,7 @@ WHERE id(l1) < id(l2) AND l1.l_linenumber = l2.l_linenumber
 RETURN pattern
 ```
 
-For details around the experiments conducted in our research we refer to the respective folders that contain information on the experiments around [Entity Integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity) and [Referential Integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity) management in E/R graphs.
+For details around the experiments conducted in our research we refer to the respective folders that contain information on the experiments concerning [entity integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/entity_integrity), [referential integrity](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/referential_integrity) management in E/R graphs and the [processing of query workloads and refresh operations](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations).
 
 
 ### Entity Integrity Experiments
