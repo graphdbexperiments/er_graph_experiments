@@ -10,7 +10,7 @@ In particular, this repository is comprised of the following:
 - experiment results on the TPC-H benchamrk
 - compilations that outline how experiments have been conducted
 - images illustrating the experiments on graph datasets
-- files and instructions on how to replicate experiments and shwoing their results
+- files and instructions on [how to replicate experiments](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/experiments_manual) and shwoing their results
 
 ## Preliminaries:
 
