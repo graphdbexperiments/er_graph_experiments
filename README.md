@@ -27,8 +27,7 @@ The software used to perform the experiments carried out in our research are:
 - MySQL 8.0.0
 
 
-
-The TPC-H benchmark and generator is provided on the official [TPC website](https://www.tpc.org/tpch/). 
+Information on the TPC-H benchmark can be found in the [dataset folder](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/datasets). Further details including the dataset and query generator are provided on the official [TPC website](https://www.tpc.org/tpch/). 
 
 
 ## Experiments:
