@@ -1,3 +1,5 @@
+# Experiments concerning query performance and refresh operations
+
 This folder contains the Python file to recreate the experiments for the benchmark queries and refresh operations from TPC-H for different scaling factors for and under different semantics for Neo4j and for MySQL as well as the results.
 
 Underneath are the results shown for execution of the TPC-H queries udner different scaling factors for the dataset:
