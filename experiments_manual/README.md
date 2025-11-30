@@ -170,6 +170,6 @@ Setttings of parameters are mostly in line with experiments for entity integrity
 
 ### 3. Benchmark Query and Refresh Operations Experiments
 
-To run these experiments the user needs to execute the python scripts in the [corresponding foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations/scripts).
+To run these experiments the user needs to execute the python scripts in the [corresponding foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations/scripts). The scripts are divided into those that need execution to reproduce the TPC-H benchmark queries and those for the refresh operations. For each experiment we created a script to run the experiments for Neo4j and one for the experiments using MySQL. 
 
   
