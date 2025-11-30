@@ -81,7 +81,7 @@ def show_query_details(database, query):
     return  (sum_db_hits(summary), sum_time(summary))
 
 
-######./.../##################
+#####################################
 
 # write to excel file
 
@@ -727,6 +727,7 @@ def main():
 
 
 main()
+
 
 
 
