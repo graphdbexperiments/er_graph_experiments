@@ -170,6 +170,23 @@ Setttings of parameters are mostly in line with experiments for entity integrity
 
 ### 3. Benchmark Query and Refresh Operations Experiments
 
-To run these experiments the user needs to execute the python scripts in the [corresponding foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations/scripts). The scripts are divided into those that need execution to reproduce the TPC-H benchmark queries and those for the refresh operations. For each experiment we created a script to run the experiments for Neo4j and one for the experiments using MySQL. 
+To run these experiments the user needs to execute the python scripts in the [corresponding foler](https://github.com/graphdbexperiments/er_graph_experiments/tree/main/queries_and_refresh_operations/scripts). The scripts are divided into those that need execution to reproduce the TPC-H benchmark queries and those for the refresh operations. For each experiment we created a script to run the experiments for Neo4j and one for the experiments using MySQL.
 
+To execute the script related to experiments using Neo4j and measure query performance the set up in the script is similar to the set up for the experiments concerning entity integrity. In addition, in the corresponding part of the script the following needs adjusting:
+
+```
+    query_number = 1
+
+    query = query_1_relational
+```
+
+Here, the first variable *query_number* is only required for writing experiment results to an excel file, while the second variable *query* determines which of the TPC-H benchmark queries is run and what semantics are being used. Similarly, in the script to measure the time to execute both TPC-H refresh operations the following needs adjusting:
+
+```
+    percentage = 100
+```
+
+Here, using the value 100 for *percentage* will execute the refresh operations as outlined in the TPC-H dcoumentation and different values can be used to scale the amount of nodes that will be created / deleted up or down.
+
+For the scripts to measure the time to execute benchmark queries and refresh operations using MySQL a similar experiment setup is required.
   
