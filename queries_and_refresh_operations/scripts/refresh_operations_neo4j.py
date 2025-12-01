@@ -122,19 +122,41 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 
 def main():
 
-    # Experiment setting
 
-    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
-    is_relational_model = True
-    is_semirelational_model = False
-    is_graph_model = False
-
-    #local bolt and http port, etc:
+    # Establish connection to Neo4j instance
     local_bolt = <local_bolt>
     local_pw = <password>
     local_user = <local_user>
     active_database = is_relational_model * "relational" + is_semirelational_model * "mixed" + is_graph_model * "graph"
 
+
+    ###############################
+    #                             #
+    #     Experiment settings     #
+    #                             #
+    ###############################   
+    
+    
+    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
+    is_relational_model = True
+    is_semirelational_model = False
+    is_graph_model = False
+
+    
+    # amount of runs for experiments with one dedicated percentage value of updates
+    runs = 20
+
+    # amount of bottom and top results based on amount of runs that will be disregarded for average caluclation
+    outliers = 5
+
+    percentage = 100 # adjustable to create / delete more than regular amound in RF1 / RF2
+    
+
+
+
+
+
+    
     # Initialise DB
     new_db = gdbms_test(local_bolt, local_user, local_pw, active_database)
 
@@ -142,22 +164,11 @@ def main():
     db_hits = [[],[]]
     times = [[], []]
 
-
-    factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
-
     # current date and time
     today = datetime.now().strftime("%Y_%m_%d")
     current = datetime.now().strftime("%H_%M_%S")
 
 
-    percentage = 100 # adjustable to create / delete more than regular amound in RF1 / RF2
-
-        
-    # perform experiment multiple times
-    runs = 20
-
-    outliers = 5
-    
 
     for i in range(0, runs):
         
@@ -329,6 +340,7 @@ def main():
 
 
 main()
+
 
 
 
