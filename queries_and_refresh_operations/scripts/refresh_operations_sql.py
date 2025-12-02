@@ -43,44 +43,47 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 
 #########################
 
-# Execute experiments
 
 
-host = <local_host>
-user = <user>
-password = <password>
-database = <local_db>
+###############################
+#                             #
+#     Experiment settings     #
+#                             #
+###############################   
 
 
-my_db = mysql.connector.connect(user = user, password = password, host = host, database = database)
+scaling_factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
 
 
-mycursor = my_db.cursor()
+# amount of runs for experiments
+runs = 20
+
+# amount of bottom and top results based on amount of runs that will be disregarded for average caluclation
+outliers = 5
 
 
-# Experiment setting
-
-scaling_factor = 1
-limit = int(scaling_factor*1500)
-
-
-# scaling of number of orders with respect to original RF 1 and RF 2
-
+# scaling of number of orders with respect to original RF1 and RF2
 percentage = 100 # adjustable to create / delete more records than specified in RF1 / RF2
 
 
 
 
 
+
+
+# Initialise DB
+
+my_db_conncetion = mysql.connector.connect(user = user, password = password, host = host, database = database)
+
+my_cursor = my_db_conncetion.cursor(buffered=True)
+
+
 # Initialise  time for RF1 and RF2
 times = [[], []]
 
 
+
 # perform experiment multiple times
-
-runs = 20
-
-outliers = 5
 
 for i in range(0, runs):
     
@@ -92,7 +95,8 @@ for i in range(0, runs):
 
 
     # Get orders keys for deletion
-
+    
+    limit = int(scaling_factor*1500)
     query = "SELECT * FROM orders ORDER BY rand() LIMIT " + str(int(limit*percentage/100))
 
 
@@ -232,3 +236,4 @@ write_to_excel(filename, sheetname, experiment_name, experiment_details, content
 
 
 my_db.close()
+
