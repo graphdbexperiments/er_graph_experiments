@@ -188,5 +188,5 @@ Here, the first variable *query_number* is only required for writing experiment 
 
 Here, using the value 100 for *percentage* will execute the refresh operations as outlined in the TPC-H dcoumentation and different values can be used to scale the amount of nodes that will be created / deleted up or down.
 
-For the scripts to measure the time to execute benchmark queries and refresh operations using MySQL a similar experiment setup is required.
+For the scripts to measure the time to execute benchmark queries and refresh operations using MySQL a similar experiment setup is required. Here, the credentials to connect to MySQL are required and parameters are like in the scripts related to Neo4j. The only difference is that no boolean values to specify a semantics is required.
   
