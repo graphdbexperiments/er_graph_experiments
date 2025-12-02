@@ -180,7 +180,7 @@ To execute the script related to experiments using Neo4j and measure query perfo
     query = query_1_relational
 ```
 
-Here, the first variable *query_number* is only required for writing experiment results to an excel file, while the second variable *query* determines which of the TPC-H benchmark queries is run and what semantics are being used. Similarly, in the script to measure the time to execute both TPC-H refresh operations the following needs adjusting:
+Here, the first variable *query_number* is only required for writing experiment results to an excel file, while the second variable *query* determines which of the TPC-H benchmark queries is run and what semantics are being used. Similarly, in the script to measure the time to execute both TPC-H refresh operations using Neo4j the following needs adjusting:
 
 ```
     percentage = 100
