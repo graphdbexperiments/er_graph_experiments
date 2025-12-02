@@ -43,35 +43,6 @@ def write_to_excel(filename, sheetname, experiment_name, heading: list, content:
 
 #########################
 
-# Execute experiments
-
-
-host = <local_host>
-user = <user>
-password = <password>
-database = <local_db>
-
-
-my_db_conncetion = mysql.connector.connect(user = user, password = password, host = host, database = database)
-
-
-my_cursor = my_db_conncetion.cursor(buffered=True)
-
-
-# Experiment setting
-
-scaling_factor = 1
-
-query_number = 10
-
-precision = 1
-
-
-# Initialise times
-times = []
-
-
-
 # Benchmark queries
 
 query_1 = ["""select
@@ -492,15 +463,66 @@ query_10 = ["SET @startDate = date('1993-02-01') + interval floor(25*rand()) mon
 
 
 
-query = query_10
+
+
+
+# Establish connection to MySQL instance
+host = <local_host>
+user = <user>
+password = <password>
+database = <local_db>
+
+
+
+
+
+###############################
+#                             #
+#     Experiment settings     #
+#                             #
+###############################   
+
+
+scaling_factor = 1 # sclaing factor for TPC-H (small = 0.01 / mdedium = 0.1 / large = 1)
+
+
+query_number = 1 # required for writing to excel
+
+query = query_1 # query to be executed
+
+
+
+precision = 1 # precision for time measured in miliseconds for query execution
+
+
+
+# amount of runs for experiments
+runs = 20
+
+# amount of bottom and top results based on amount of runs that will be disregarded for average caluclation
+outliers = 5
+
+
+
+
+
+
+
+
+# Initialise DB
+
+my_db_conncetion = mysql.connector.connect(user = user, password = password, host = host, database = database)
+
+my_cursor = my_db_conncetion.cursor(buffered=True)
+
+
+# Initialise times
+times = []
+
 
 
 
 # perform experiment multiple times
-
-runs = 20
-
-outliers = 5
 
 for i in range(0, runs):
     
@@ -558,3 +580,4 @@ write_to_excel(filename, sheetname, experiment_name, experiment_details, content
 my_cursor.close()
 
 my_db_conncetion.close()
+
