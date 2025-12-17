@@ -1,6 +1,6 @@
 # Manual to replicate experiments for E/R graphs
 
-This manual will provide a step by step guide on how to get set up to replicate the experiments on graph translations of TPC-H discussed in our research.
+This manual will provide a step-by-step guide on how to get set up to replicate the experiments on graph translations of TPC-H discussed in our research.
 
 In particular, this folder contains information on the following:
 
@@ -12,7 +12,7 @@ In particular, this folder contains information on the following:
 
 ### Neo4j Sandbox:
 
-To replicate the experiments without downlaoding Neo4j Desktop to a local machine we recommend using the [Neo4j Sandbox](https://neo4j.com/sandbox/). By clicking the link and logging in the user will be able to create a project using one of Neo4j's sample datasets. Here, it is best to create an "empty", blank Sandbox.
+To replicate the experiments without downloading Neo4j Desktop to a local machine we recommend using the [Neo4j Sandbox](https://neo4j.com/sandbox/). By clicking the link and logging in the user will be able to create a project using one of Neo4j's sample datasets. Here, it is best to create an "empty", blank Sandbox.
 
 ![Creating a blank Sandbox](./images/sandbox1.JPG)
 
