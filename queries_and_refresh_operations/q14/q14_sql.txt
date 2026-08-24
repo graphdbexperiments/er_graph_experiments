@@ -1,0 +1,42 @@
+# parameters
+
+l_shipdate
+
+
+
+# query with flexible parameters
+
+SET @startDate = date('1993-01-01') + interval floor(60*rand()) month;
+select
+  100.00 * sum(case
+    when p_type like 'PROMO%'
+      then l_extendedprice * (1 - l_discount)
+    else 0
+  end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue
+from
+  lineitem,
+  part
+where
+  l_partkey = p_partkey
+  and l_shipdate >= @startDate
+  and l_shipdate < @startDate + interval '1' month;
+
+
+
+
+
+# validation query
+
+select
+  100.00 * sum(case
+    when p_type like 'PROMO%'
+      then l_extendedprice * (1 - l_discount)
+    else 0
+  end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue
+from
+  lineitem,
+  part
+where
+  l_partkey = p_partkey
+  and l_shipdate >= date '1995-09-01'
+  and l_shipdate < date '1995-09-01' + interval '1' month;
