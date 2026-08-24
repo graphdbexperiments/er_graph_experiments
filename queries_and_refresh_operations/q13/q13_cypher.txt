@@ -1,0 +1,59 @@
+###### Parameters
+
+o.o_comment
+
+
+
+
+##### relational semantics
+
+WITH ['special', 'pending', 'unusual', 'express'] AS words1,
+['packages', 'requests', 'accounts', 'deposits'] AS words2,
+toInteger(floor(4*rand())) AS position1,
+toInteger(floor(4*rand())) AS position2
+WITH words1[position1] AS word1, words2[position2] AS word2
+MATCH (c:CUSTOMER), (o:ORDERS)
+WHERE c.c_custkey = o.o_custkey
+  AND NOT (o.o_comment CONTAINS word1 AND o.o_comment CONTAINS word2)
+WITH c.c_custkey AS custkey, COUNT(o.o_orderkey) AS order_count
+WITH order_count, COUNT(*) AS cust_dist
+RETURN order_count AS C_COUNT, cust_dist AS CUSTDIST
+ORDER BY cust_dist DESC, order_count DESC
+
+
+
+
+
+
+##### mixed semantics
+
+WITH ['special', 'pending', 'unusual', 'express'] AS words1,
+['packages', 'requests', 'accounts', 'deposits'] AS words2,
+toInteger(floor(4*rand())) AS position1,
+toInteger(floor(4*rand())) AS position2
+WITH words1[position1] AS word1, words2[position2] AS word2
+MATCH (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)
+WHERE c.c_custkey = o.o_custkey
+  AND NOT (o.o_comment CONTAINS word1 AND o.o_comment CONTAINS word2)
+WITH c.c_custkey AS custkey, COUNT(o.o_orderkey) AS order_count
+WITH order_count, COUNT(*) AS cust_dist
+RETURN order_count AS C_COUNT, cust_dist AS CUSTDIST
+ORDER BY cust_dist DESC, order_count DESC
+
+
+
+
+
+##### graph semantics
+
+WITH ['special', 'pending', 'unusual', 'express'] AS words1,
+['packages', 'requests', 'accounts', 'deposits'] AS words2,
+toInteger(floor(4*rand())) AS position1,
+toInteger(floor(4*rand())) AS position2
+WITH words1[position1] AS word1, words2[position2] AS word2
+MATCH (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)
+WHERE NOT (o.o_comment CONTAINS word1 AND o.o_comment CONTAINS word2)
+WITH c.c_custkey AS custkey, COUNT(o.o_orderkey) AS order_count
+WITH order_count, COUNT(*) AS cust_dist
+RETURN order_count AS C_COUNT, cust_dist AS CUSTDIST
+ORDER BY cust_dist DESC, order_count DESC
