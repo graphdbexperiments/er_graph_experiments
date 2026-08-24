@@ -1,0 +1,61 @@
+###### Parameters
+
+n.n_name
+
+
+##### relational semantics
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation
+MATCH (ps_total:PARTSUPP), (s_total:SUPPLIER), (n_total:NATION)
+WHERE ps_total.ps_suppkey = s_total.s_suppkey
+  AND s_total.s_nationkey = n_total.n_nationkey
+  AND n_total.n_name = nation
+WITH SUM(ps_total.ps_supplycost * ps_total.ps_availqty) * 0.0001 / <scaling_factor> AS threshold, nation
+MATCH (ps:PARTSUPP), (s:SUPPLIER), (n:NATION)
+WHERE ps.ps_suppkey = s.s_suppkey
+  AND s.s_nationkey = n.n_nationkey
+  AND n.n_name = nation
+WITH ps.ps_partkey AS partkey, SUM(ps.ps_supplycost * ps.ps_availqty) AS value, threshold
+WHERE value > threshold
+RETURN partkey, value ORDER BY value DESC
+
+
+
+
+##### mixed semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation
+MATCH (ps_total:PARTSUPP), (s_total:SUPPLIER)-[:SUPPLIER_NATION]->(n_total:NATION)
+WHERE ps_total.ps_suppkey = s_total.s_suppkey
+  AND n_total.n_name = nation
+WITH SUM(ps_total.ps_supplycost * ps_total.ps_availqty) * 0.0001 / <scaling_factor> AS threshold, nation
+MATCH (ps:PARTSUPP), (s:SUPPLIER)-[:SUPPLIER_NATION]->(n:NATION)
+WHERE ps.ps_suppkey = s.s_suppkey
+  AND n.n_name = nation
+WITH ps.ps_partkey AS partkey, SUM(ps.ps_supplycost * ps.ps_availqty) AS value, threshold
+WHERE value > threshold
+RETURN partkey, value ORDER BY value DESC
+
+
+
+
+##### graph semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation
+MATCH (ps_total:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s_total:SUPPLIER)-[:SUPPLIER_NATION]->(n_total:NATION)
+WHERE n_total.n_name = nation
+WITH SUM(ps_total.ps_supplycost * ps_total.ps_availqty) * 0.0001 / <scaling_factor> AS threshold, nation
+MATCH (p:PART)<-[:PARTSUPP_PART]-(ps:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s:SUPPLIER)-[:SUPPLIER_NATION]->(n:NATION)
+WHERE n.n_name = nation
+WITH p.p_partkey AS partkey, SUM(ps.ps_supplycost * ps.ps_availqty) AS value, threshold
+WHERE value > threshold
+RETURN partkey, value ORDER BY value DESC
+
