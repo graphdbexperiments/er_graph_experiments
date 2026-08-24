@@ -1,0 +1,95 @@
+# parameters
+
+p_brand, l_quantity
+
+
+
+
+# query with flexible parameters
+
+SET @digit11 = FLOOR(5*RAND());
+SET @digit12 = FLOOR(5*RAND());
+SET @digit21 = FLOOR(5*RAND());
+SET @digit22 = FLOOR(5*RAND());
+SET @digit31 = FLOOR(5*RAND());
+SET @digit32 = FLOOR(5*RAND());
+SET @qty1 = 1 + FLOOR(9*RAND());
+SET @qty2 = 10 + FLOOR(10*RAND());
+SET @qty3 = 20 + FLOOR(10*RAND());
+select
+  sum(l_extendedprice* (1 - l_discount)) as revenue
+from
+  lineitem,
+  part
+where
+  (
+    p_partkey = l_partkey
+    and p_brand = CONCAT('Brand#', @digit11, @digit12)
+    and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+    and l_quantity >= @qty1 and l_quantity <= @qty1 + 10
+    and p_size between 1 and 5
+    and l_shipmode in ('AIR', 'AIR REG')
+    and l_shipinstruct = 'DELIVER IN PERSON'
+  )
+  or  
+  (
+    p_partkey = l_partkey
+    and p_brand = CONCAT('Brand#', @digit21, @digit22)
+    and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+    and l_quantity >= @qty2 and l_quantity <= @qty2 + 10
+    and p_size between 1 and 10
+    and l_shipmode in ('AIR', 'AIR REG')
+    and l_shipinstruct = 'DELIVER IN PERSON'
+  )
+  or  
+  (
+    p_partkey = l_partkey
+    and p_brand = CONCAT('Brand#', @digit31, @digit32)
+    and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+    and l_quantity >= @qty3 and l_quantity <= @qty3 + 10
+    and p_size between 1 and 15
+    and l_shipmode in ('AIR', 'AIR REG')
+    and l_shipinstruct = 'DELIVER IN PERSON'
+  );
+
+
+
+
+# validation query
+
+
+select
+  sum(l_extendedprice* (1 - l_discount)) as revenue
+from
+  lineitem,
+  part
+where
+  (
+    p_partkey = l_partkey
+    and p_brand = 'Brand#12'
+    and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+    and l_quantity >= 1 and l_quantity <= 1 + 10
+    and p_size between 1 and 5
+    and l_shipmode in ('AIR', 'AIR REG')
+    and l_shipinstruct = 'DELIVER IN PERSON'
+  )
+  or  
+  (
+    p_partkey = l_partkey
+    and p_brand = 'Brand#23'
+    and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+    and l_quantity >= 10 and l_quantity <= 10 + 10
+    and p_size between 1 and 10
+    and l_shipmode in ('AIR', 'AIR REG')
+    and l_shipinstruct = 'DELIVER IN PERSON'
+  )
+  or  
+  (
+    p_partkey = l_partkey
+    and p_brand = 'Brand#34'
+    and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+    and l_quantity >= 20 and l_quantity <= 20 + 10
+    and p_size between 1 and 15
+    and l_shipmode in ('AIR', 'AIR REG')
+    and l_shipinstruct = 'DELIVER IN PERSON'
+  );
