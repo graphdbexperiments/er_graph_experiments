@@ -1,0 +1,54 @@
+###### Parameters
+
+l_shipdate
+
+
+
+##### relational semantics
+
+
+WITH date('1993-01-01') + Duration({months: toInteger(floor(57*rand()))}) AS start_date
+MATCH (l:LINEITEM), (s:SUPPLIER)
+WHERE l.l_suppkey = s.s_suppkey
+  AND date(l.l_shipdate) >= start_date
+  AND date(l.l_shipdate) < start_date + Duration({months: 3})
+WITH s.s_suppkey AS supplier_no, s.s_name AS name, s.s_address AS address, s.s_phone AS phone,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS total_revenue
+WITH supplier_no, name, address, phone, total_revenue
+ORDER BY total_revenue DESC
+LIMIT 1
+RETURN supplier_no, name, address, phone, total_revenue
+
+
+
+
+##### mixed semantics
+
+WITH date('1993-01-01') + Duration({months: toInteger(floor(57*rand()))}) AS start_date
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP), (s:SUPPLIER)
+WHERE ps.ps_suppkey = s.s_suppkey  
+  AND date(l.l_shipdate) >= start_date
+  AND date(l.l_shipdate) < start_date + Duration({months: 3})
+WITH s.s_suppkey AS supplier_no, s.s_name AS name, s.s_address AS address, s.s_phone AS phone,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS total_revenue
+WITH supplier_no, name, address, phone, total_revenue
+ORDER BY total_revenue DESC
+LIMIT 1
+RETURN supplier_no, name, address, phone, total_revenue
+
+
+
+
+
+##### graph semantics
+
+WITH date('1993-01-01') + Duration({months: toInteger(floor(57*rand()))}) AS start_date
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s:SUPPLIER)
+WHERE date(l.l_shipdate) >= start_date
+  AND date(l.l_shipdate) < start_date + Duration({months: 3})
+WITH s.s_suppkey AS supplier_no, s.s_name AS name, s.s_address AS address, s.s_phone AS phone,
+     SUM(l.l_extendedprice * (1 - l.l_discount)) AS total_revenue
+WITH supplier_no, name, address, phone, total_revenue
+ORDER BY total_revenue DESC
+LIMIT 1
+RETURN supplier_no, name, address, phone, total_revenue
