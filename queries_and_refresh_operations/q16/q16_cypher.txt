@@ -1,0 +1,84 @@
+###### Parameters
+
+p_brand, p_type, p_size
+
+
+##### relational semantics
+
+WITH ['STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO'] AS types1,
+['ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED'] AS types2,
+toInteger(floor(5*rand())) AS position1,
+toInteger(floor(4*rand())) AS position2
+WITH types1[position1] + ' ' + types2[position2] AS type_name,
+toInteger(floor(5*rand())) AS digit1,
+toInteger(floor(5*rand())) AS digit2,
+[n IN range(1,8) | toInteger(floor(1 + 49*rand()))] AS sizes
+MATCH (s:SUPPLIER)
+WHERE s.s_comment CONTAINS 'Customer' AND s.s_comment CONTAINS 'Complaints'
+WITH COLLECT(s.s_suppkey) AS excluded_suppkeys, digit1, digit2, type_name, sizes
+MATCH (ps:PARTSUPP), (p:PART)
+WHERE ps.ps_partkey = p.p_partkey
+  AND p.p_brand <> ('Brand#' + digit1 + digit2)
+  AND NOT p.p_type STARTS WITH type_name
+  AND p.p_size IN sizes
+  AND NOT ps.ps_suppkey IN excluded_suppkeys
+WITH p.p_brand AS brand, p.p_type AS type, p.p_size AS size, COUNT(DISTINCT ps.ps_suppkey) AS supplier_count
+RETURN brand, type, size, supplier_count
+ORDER BY supplier_count DESC, brand, type, size
+
+
+
+
+
+##### mixed semantics
+
+
+WITH ['STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO'] AS types1,
+['ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED'] AS types2,
+toInteger(floor(5*rand())) AS position1,
+toInteger(floor(4*rand())) AS position2
+WITH types1[position1] + ' ' + types2[position2] AS type_name,
+toInteger(floor(5*rand())) AS digit1,
+toInteger(floor(5*rand())) AS digit2,
+[n IN range(1,8) | toInteger(floor(1 + 49*rand()))] AS sizes
+MATCH (s:SUPPLIER)
+WHERE s.s_comment CONTAINS 'Customer' AND s.s_comment CONTAINS 'Complaints'
+WITH COLLECT(s.s_suppkey) AS excluded_suppkeys, digit1, digit2, type_name, sizes
+MATCH (ps:PARTSUPP), (p:PART)
+WHERE ps.ps_partkey = p.p_partkey
+  AND p.p_brand <> ('Brand#' + digit1 + digit2)
+  AND NOT p.p_type STARTS WITH type_name
+  AND p.p_size IN sizes
+  AND NOT ps.ps_suppkey IN excluded_suppkeys
+WITH p.p_brand AS brand, p.p_type AS type, p.p_size AS size, COUNT(DISTINCT ps.ps_suppkey) AS supplier_count
+RETURN brand, type, size, supplier_count
+ORDER BY supplier_count DESC, brand, type, size
+
+
+
+
+##### graph semantics
+
+
+
+
+
+WITH ['STANDARD', 'SMALL', 'MEDIUM', 'LARGE', 'ECONOMY', 'PROMO'] AS types1,
+['ANODIZED', 'BURNISHED', 'PLATED', 'POLISHED', 'BRUSHED'] AS types2,
+toInteger(floor(5*rand())) AS position1,
+toInteger(floor(4*rand())) AS position2
+WITH types1[position1] + ' ' + types2[position2] AS type_name,
+toInteger(floor(5*rand())) AS digit1,
+toInteger(floor(5*rand())) AS digit2,
+[n IN range(1,8) | toInteger(floor(1 + 49*rand()))] AS sizes
+MATCH (s:SUPPLIER)
+WHERE s.s_comment CONTAINS 'Customer' AND s.s_comment CONTAINS 'Complaints'
+WITH COLLECT(s.s_suppkey) AS excluded_suppkeys, digit1, digit2, type_name, sizes
+MATCH (s:SUPPLIER)<-[:PARTSUPP_SUPPLIER]-(ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART)
+WHERE p.p_brand <> ('Brand#' + digit1 + digit2)
+  AND NOT p.p_type STARTS WITH type_name
+  AND p.p_size IN sizes
+  AND NOT s.s_suppkey IN excluded_suppkeys
+WITH p.p_brand AS brand, p.p_type AS type, p.p_size AS size, COUNT(DISTINCT s.s_suppkey) AS supplier_count
+RETURN brand, type, size, supplier_count
+ORDER BY supplier_count DESC, brand, type, size
