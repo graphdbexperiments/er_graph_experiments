@@ -1,0 +1,85 @@
+###### Parameters
+
+n_name
+
+
+
+##### relational semantics
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation
+MATCH (s:SUPPLIER), (n:NATION), (l1:LINEITEM), (o:ORDERS)
+WHERE n.n_name = nation
+  AND s.s_nationkey = n.n_nationkey  
+  AND l1.l_suppkey = s.s_suppkey  
+  AND l1.l_orderkey = o.o_orderkey  
+  AND l1.l_receiptdate > l1.l_commitdate  
+  AND EXISTS {
+      MATCH (l2:LINEITEM)
+      WHERE l2.l_orderkey = l1.l_orderkey
+        AND l2.l_suppkey <> l1.l_suppkey
+  }
+  AND NOT EXISTS {
+      MATCH (l3:LINEITEM)
+      WHERE l3.l_orderkey = l1.l_orderkey
+        AND l3.l_suppkey <> l1.l_suppkey
+        AND l3.l_receiptdate > l3.l_commitdate
+  }
+RETURN s.s_name AS supplier_name, COUNT(*) AS numwait
+ORDER BY numwait DESC, supplier_name
+
+
+
+
+##### mixed semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation
+MATCH (s:SUPPLIER)-[:SUPPLIER_NATION]->(n:NATION), (l1:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps1:PARTSUPP), (o:ORDERS)
+WHERE n.n_name = nation 
+  AND ps1.ps_suppkey = s.s_suppkey  
+  AND l1.l_orderkey = o.o_orderkey  
+  AND l1.l_receiptdate > l1.l_commitdate  
+  AND EXISTS {
+      MATCH (l2:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps2:PARTSUPP)
+      WHERE l2.l_orderkey = l1.l_orderkey
+        AND ps2.ps_suppkey <> ps1.ps_suppkey
+  }
+  AND NOT EXISTS {
+      MATCH (l3:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps3:PARTSUPP)
+      WHERE l3.l_orderkey = l1.l_orderkey
+        AND ps3.ps_suppkey <> ps1.ps_suppkey
+        AND l3.l_receiptdate > l3.l_commitdate
+  }
+RETURN s.s_name AS supplier_name, COUNT(*) AS numwait
+ORDER BY numwait DESC, supplier_name
+
+
+
+
+##### graph semantics
+
+
+WITH ['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(25*rand())) AS position
+WITH nations[position] AS nation
+MATCH (o1:ORDERS)<-[:LINEITEM_ORDERS]-(l1:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps1:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s1:SUPPLIER)-[:SUPPLIER_NATION]->(n:NATION) 
+WHERE n.n_name = nation
+  AND l1.l_receiptdate > l1.l_commitdate  
+  AND EXISTS {
+      MATCH (o2:ORDERS)<-[:LINEITEM_ORDERS]-(l2:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps2:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s2:SUPPLIER)
+      WHERE o2.o_orderkey = o1.o_orderkey
+        AND s2.s_suppkey <> s1.s_suppkey
+  }
+  AND NOT EXISTS {
+      MATCH (o3:ORDERS)<-[:LINEITEM_ORDERS]-(l3:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps3:PARTSUPP)-[:PARTSUPP_SUPPLIER]->(s3:SUPPLIER)
+      WHERE o3.o_orderkey = o1.o_orderkey
+        AND s3.s_suppkey <> s1.s_suppkey
+        AND l3.l_receiptdate > l3.l_commitdate
+  }
+RETURN s1.s_name AS supplier_name, COUNT(*) AS numwait
+ORDER BY numwait DESC, supplier_name
+
