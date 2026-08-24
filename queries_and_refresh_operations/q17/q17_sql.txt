@@ -1,0 +1,55 @@
+# parameters
+
+p_brand, p_container
+
+
+
+# query with flexible parameters
+
+SET @containerParts1 = JSON_ARRAY('SM', 'LG', 'MED', 'JUMBO', 'WARP');
+SET @containerPart1 = JSON_UNQUOTE(JSON_EXTRACT(@containerParts1, CONCAT('$[',FLOOR(5*RAND()),']')));
+SET @containerParts2 = JSON_ARRAY('CASE', 'BOX', 'JAR', 'PKG', 'PACK', 'CAN', 'DRUM');
+SET @containerPart2 = JSON_UNQUOTE(JSON_EXTRACT(@containerParts2, CONCAT('$[',FLOOR(8*RAND()),']')));
+SET @container = CONCAT(@containerPart1, ' ', @containerPart2);
+SET @digit1 = FLOOR(5*RAND());
+SET @digit2 = FLOOR(5*RAND());
+select
+  sum(l_extendedprice) / 7.0 as avg_yearly
+from
+  lineitem,
+  part
+where
+  p_partkey = l_partkey
+  and p_brand = CONCAT('Brand#', @digit1, @digit2)
+  and p_container = @container
+  and l_quantity < (
+    select
+      0.2 *avg(l_quantity)
+    from
+      lineitem
+    where
+      l_partkey = p_partkey
+  );
+
+
+
+
+# validation query
+
+select
+  sum(l_extendedprice) / 7.0 as avg_yearly
+from
+  line item,
+  part
+where
+  p_partkey = l_partkey
+  and p_brand = 'Brand#23'
+  and p_container = 'MED BOX'
+  and l_quantity < (
+    select
+      0.2 *avg(l_quantity)
+    from
+      lineitem
+    where
+      l_partkey = p_partkey
+  );
