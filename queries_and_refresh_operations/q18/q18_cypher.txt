@@ -1,0 +1,41 @@
+###### Parameters
+
+l_quantity
+
+
+##### relational semantics
+
+
+MATCH (l:LINEITEM), (o:ORDERS), (c:CUSTOMER)
+WHERE l.l_orderkey = o.o_orderkey
+  AND o.o_custkey = c.c_custkey
+WITH c, o, SUM(l.l_quantity) AS amount
+WHERE amount > (312 + toInteger(floor(3*rand())))
+RETURN c.c_name AS customer_name, c.c_custkey AS customer_key, o.o_orderkey AS order_key, o.o_orderdate AS order_date, o.o_totalprice AS price, amount
+ORDER BY price DESC, order_date
+
+
+
+
+
+##### mixed semantics
+
+
+MATCH (l:LINEITEM), (o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)
+WHERE l.l_orderkey = o.o_orderkey
+WITH c, o, SUM(l.l_quantity) AS amount
+WHERE amount > (312 + toInteger(floor(3*rand())))
+RETURN c.c_name AS customer_name, c.c_custkey AS customer_key, o.o_orderkey AS order_key, o.o_orderdate AS order_date, o.o_totalprice AS price, amount
+ORDER BY price DESC, order_date
+
+
+
+
+##### graph semantics
+
+
+MATCH (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)-[:ORDERS_CUSTOMER]->(c:CUSTOMER)
+WITH c, o, SUM(l.l_quantity) AS amount
+WHERE amount > (312 + toInteger(floor(3*rand())))
+RETURN c.c_name AS customer_name, c.c_custkey AS customer_key, o.o_orderkey AS order_key, o.o_orderdate AS order_date, o.o_totalprice AS price, amount
+ORDER BY price DESC, order_date
