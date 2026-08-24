@@ -1,0 +1,94 @@
+###### Parameters
+
+l.l_shipmode, l_receiptdate
+
+
+##### relational semantics
+
+WITH date('1993-01-01') + Duration({years: toInteger(floor(4*rand()))}) AS start_date,
+['REG AIR', 'AIR', 'RAIL', 'SHIP', 'TRUCK', 'MAIL', 'FOB'] AS modes,
+toInteger(floor(7*rand())) AS position1
+WITH start_date, modes[position1] AS mode1, modes[toInteger(position1 + (1+floor(5*rand()))) % 7] AS mode2
+MATCH (l:LINEITEM), (o:ORDERS)
+WHERE l.l_orderkey = o.o_orderkey
+  AND l.l_shipmode IN [mode1, mode2] 
+  AND date(l.l_commitdate) < date(l.l_receiptdate)
+  AND date(l.l_shipdate) < date(l.l_commitdate)
+  AND date(l.l_receiptdate) >= start_date
+  AND date(l.l_receiptdate) < (start_date + Duration({years: 1}))
+WITH l.l_shipmode AS shipmode,
+     CASE 
+       WHEN o.o_orderpriority = '1-URGENT' OR o.o_orderpriority = '2-HIGH' THEN 1
+       ELSE 0
+     END AS high_line,
+     CASE 
+       WHEN o.o_orderpriority <> '1-URGENT' AND o.o_orderpriority <> '2-HIGH' THEN 1
+       ELSE 0
+     END AS low_line
+RETURN shipmode,
+       SUM(high_line) AS high_line_count,
+       SUM(low_line) AS low_line_count
+ORDER BY shipmode
+
+
+
+
+
+##### mixed semantics
+
+
+WITH date('1993-01-01') + Duration({years: toInteger(floor(4*rand()))}) AS start_date,
+['REG AIR', 'AIR', 'RAIL', 'SHIP', 'TRUCK', 'MAIL', 'FOB'] AS modes,
+toInteger(floor(7*rand())) AS position1
+WITH start_date, modes[position1] AS mode1, modes[toInteger(position1 + (1+floor(5*rand()))) % 7] AS mode2
+MATCH (l:LINEITEM), (o:ORDERS)
+WHERE l.l_orderkey = o.o_orderkey
+  AND l.l_shipmode IN [mode1, mode2] 
+  AND date(l.l_commitdate) < date(l.l_receiptdate)
+  AND date(l.l_shipdate) < date(l.l_commitdate)
+  AND date(l.l_receiptdate) >= start_date
+  AND date(l.l_receiptdate) < (start_date + Duration({years: 1}))
+WITH l.l_shipmode AS shipmode,
+     CASE 
+       WHEN o.o_orderpriority = '1-URGENT' OR o.o_orderpriority = '2-HIGH' THEN 1
+       ELSE 0
+     END AS high_line,
+     CASE 
+       WHEN o.o_orderpriority <> '1-URGENT' AND o.o_orderpriority <> '2-HIGH' THEN 1
+       ELSE 0
+     END AS low_line
+RETURN shipmode,
+       SUM(high_line) AS high_line_count,
+       SUM(low_line) AS low_line_count
+ORDER BY shipmode
+
+
+
+
+##### graph semantics
+
+WITH date('1993-01-01') + Duration({years: toInteger(floor(4*rand()))}) AS start_date,
+['REG AIR', 'AIR', 'RAIL', 'SHIP', 'TRUCK', 'MAIL', 'FOB'] AS modes,
+toInteger(floor(7*rand())) AS position1
+WITH start_date, modes[position1] AS mode1, modes[toInteger(position1 + (1+floor(5*rand()))) % 7] AS mode2
+MATCH (l:LINEITEM)-[:LINEITEM_ORDERS]->(o:ORDERS)
+WHERE l.l_shipmode IN [mode1, mode2] 
+  AND date(l.l_commitdate) < date(l.l_receiptdate)
+  AND date(l.l_shipdate) < date(l.l_commitdate)
+  AND date(l.l_receiptdate) >= start_date
+  AND date(l.l_receiptdate) < (start_date + Duration({years: 1}))
+WITH l.l_shipmode AS shipmode,
+     CASE 
+       WHEN o.o_orderpriority = '1-URGENT' OR o.o_orderpriority = '2-HIGH' THEN 1
+       ELSE 0
+     END AS high_line,
+     CASE 
+       WHEN o.o_orderpriority <> '1-URGENT' AND o.o_orderpriority <> '2-HIGH' THEN 1
+       ELSE 0
+     END AS low_line
+RETURN shipmode,
+       SUM(high_line) AS high_line_count,
+       SUM(low_line) AS low_line_count
+ORDER BY shipmode
+
+
