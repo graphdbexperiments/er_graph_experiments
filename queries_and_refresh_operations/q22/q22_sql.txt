@@ -1,0 +1,95 @@
+# parameters
+
+c_phone
+
+
+# in separate query to get customer offset for randomization and store result as q22_offset
+
+select floor(rand()*(COUNT(*) - 7)) FROM customer
+
+
+# query with flexible parameters
+
+select
+  cntrycode,
+  count(*) as numcust,
+  sum(c_acctbal) as totacctbal
+from
+  (
+    select
+      substring(c_phone, 1, 2) as cntrycode,
+      c_acctbal
+    from
+      customer
+    where
+      substring(c_phone, 1, 2) in (
+	select countrycode from (select distinct substring(c_phone, 1, 2) as countrycode from customer LIMIT 7 OFFSET {q22_offset}) as countrycodes
+      )
+      and c_acctbal > (
+        select
+          avg(c_acctbal)
+        from
+          customer
+        where
+          c_acctbal > 0.00
+          and substring(c_phone, 1, 2) in (
+			select countrycode from (select distinct substring(c_phone, 1, 2) as countrycode from customer LIMIT 7 OFFSET {q22_offset}) as countrycodes
+			)
+      )   
+      and not exists (
+        select
+          *
+        from
+          orders
+        where
+          o_custkey = c_custkey
+      )   
+  ) as custsale
+group by
+  cntrycode
+order by
+  cntrycode;
+
+
+
+
+# validation query
+
+
+select
+  cntrycode,
+  count(*) as numcust,
+  sum(c_acctbal) as totacctbal
+from
+  (
+    select
+      substring(c_phone, 1, 2) as cntrycode,
+      c_acctbal
+    from
+      customer
+    where
+      substring(c_phone, 1, 2) in
+        ('13', '31', '23', '29', '30', '18', '17')
+      and c_acctbal > (
+        select
+          avg(c_acctbal)
+        from
+          customer
+        where
+          c_acctbal > 0.00
+          and substring(c_phone, 1, 2) in
+            ('13', '31', '23', '29', '30', '18', '17')
+      )   
+      and not exists (
+        select
+          *
+        from
+          orders
+        where
+          o_custkey = c_custkey
+      )   
+  ) as custsale
+group by
+  cntrycode
+order by
+  cntrycode;
