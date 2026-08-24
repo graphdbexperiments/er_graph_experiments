@@ -1,0 +1,52 @@
+###### Parameters
+
+l_shipdate
+
+
+
+##### relational semantics
+
+WITH date('1993-01-01') + Duration({months: toInteger(floor(59*rand()))}) AS start_date
+MATCH (l:LINEITEM), (p:PART)
+WHERE l.l_partkey = p.p_partkey
+  AND date(l.l_shipdate) >= start_date
+  AND date(l.l_shipdate) < start_date + Duration({months: 1})
+WITH SUM(CASE
+        WHEN p.p_type STARTS WITH 'PROMO' THEN l.l_extendedprice * (1 - l.l_discount)
+        ELSE 0
+    END) AS promo_revenue,
+    SUM(l.l_extendedprice * (1 - l.l_discount)) AS total_revenue
+RETURN 100.0 * promo_revenue / total_revenue AS promo_revenue_percentage
+
+
+
+
+##### mixed semantics
+
+WITH date('1993-01-01') + Duration({months: toInteger(floor(59*rand()))}) AS start_date
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP), (p:PART)
+WHERE ps.ps_partkey = p.p_partkey  
+  AND date(l.l_shipdate) >= start_date
+  AND date(l.l_shipdate) < start_date + Duration({months: 1})
+WITH SUM(CASE
+        WHEN p.p_type STARTS WITH 'PROMO' THEN l.l_extendedprice * (1 - l.l_discount)
+        ELSE 0
+    END) AS promo_revenue,
+    SUM(l.l_extendedprice * (1 - l.l_discount)) AS total_revenue
+RETURN 100.0 * promo_revenue / total_revenue AS promo_revenue_percentage
+
+
+
+##### graph semantics
+
+WITH date('1993-01-01') + Duration({months: toInteger(floor(59*rand()))}) AS start_date
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART)
+WHERE date(l.l_shipdate) >= start_date
+  AND date(l.l_shipdate) < start_date + Duration({months: 1})
+WITH SUM(CASE
+        WHEN p.p_type STARTS WITH 'PROMO' THEN l.l_extendedprice * (1 - l.l_discount)
+        ELSE 0
+    END) AS promo_revenue,
+    SUM(l.l_extendedprice * (1 - l.l_discount)) AS total_revenue
+RETURN 100.0 * promo_revenue / total_revenue AS promo_revenue_percentage
+
