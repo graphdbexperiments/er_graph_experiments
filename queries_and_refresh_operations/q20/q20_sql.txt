@@ -1,0 +1,123 @@
+# parameters
+
+
+p_name, l_shipdate, n_name
+
+
+
+# query with flexible parameters
+
+SET @colors = JSON_ARRAY('almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow');
+SET @colorPosition = FLOOR(80*RAND());
+SET @color = JSON_UNQUOTE(JSON_EXTRACT(@colors, CONCAT('$[',@colorPosition,']')));
+SET @nations = JSON_ARRAY(
+            'ALGERIA',
+            'ARGENTINA',
+            'BRAZIL',
+            'CANADA',
+            'EGYPT',
+            'ETHIOPIA',
+            'FRANCE',
+            'GERMANY',
+            'INDIA',
+            'INDONESIA',
+            'IRAN',
+            'IRAQ',
+            'JAPAN',
+            'JORDAN',
+            'KENYA',
+            'MOROCCO',
+            'MOZAMBIQUE',
+            'PERU',
+            'CHINA'
+            'ROMANIA',
+            'SAUDI ARABIA',  
+            'VIETNAM',
+            'RUSSIA',
+            'UNITED KINGDOM',
+            'UNITED STATES');
+SET @nationPosition = FLOOR(25*RAND());
+SET @nation = JSON_UNQUOTE(JSON_EXTRACT(@nations, CONCAT('$[', @nationPosition,']')));
+SET @startDate = date('1993-01-01') + interval floor(4*rand()) year;
+select
+  s_name,
+  s_address
+from
+  supplier,
+  nation
+where
+  s_suppkey in (
+    select
+      ps_suppkey
+    from
+      partsupp
+    where
+      ps_partkey in (
+        select
+          p_partkey
+        from
+          part
+        where
+          p_name like CONCAT(@color, '%')
+      )   
+      and ps_availqty > (
+        select
+          0.5 * sum(l_quantity)
+        from
+          lineitem
+        where
+          l_partkey = ps_partkey
+          and l_suppkey = ps_suppkey
+          and l_shipdate >= @startDate
+          and l_shipdate < @startDate + interval '1' year
+      )   
+  )
+  and s_nationkey = n_nationkey
+  and n_name = @nation
+order by
+s_name;
+
+
+
+
+
+# validation query
+
+
+select
+  s_name,
+  s_address
+from
+  supplier,
+  nation
+where
+  s_suppkey in (
+    select
+      ps_suppkey
+    from
+      partsupp
+    where
+      ps_partkey in (
+        select
+          p_partkey
+        from
+          part
+        where
+          p_name like 'forest%'
+      )   
+      and ps_availqty > (
+        select
+          0.5 * sum(l_quantity)
+        from
+          lineitem
+        where
+          l_partkey = ps_partkey
+          and l_suppkey = ps_suppkey
+          and l_shipdate >= date '1994-01-01'
+          and l_shipdate < date '1994-01-01' + interval '1' year
+      )   
+  )
+  and s_nationkey = n_nationkey
+  and n_name = 'CANADA'
+order by
+  s_name;
