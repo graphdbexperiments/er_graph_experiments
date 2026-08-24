@@ -1,0 +1,55 @@
+# parameters
+
+o_comment
+
+
+
+# query with flexible parameters
+
+SET @words1 = JSON_ARRAY('special', 'pending', 'unusual', 'express');
+SET @words2 = JSON_ARRAY('packages', 'requests', 'accounts', 'deposits');
+SET @word1Position = FLOOR(3*RAND());
+SET @word2Position = FLOOR(3*RAND());
+SET @word1 = JSON_UNQUOTE(JSON_EXTRACT(@words1, CONCAT('$[', @word1Position,']')));
+SET @word2 = JSON_UNQUOTE(JSON_EXTRACT(@words2, CONCAT('$[', @word2Position,']')));
+select c_count, count(*) as custdist
+from (
+    select
+        c_custkey,
+        count(o_orderkey) as c_count
+    from
+        customer left outer join orders on
+            c_custkey = o_custkey
+            and o_comment not like CONCAT('%', @word1, '%', @word2, 'requests', '%')
+    group by  
+        c_custkey
+    ) as c_orders
+group by  
+    c_count
+order by
+    custdist desc,
+    c_count desc;
+
+
+
+
+# validation query
+
+
+select c_count, count(*) as custdist
+from (
+    select
+        c_custkey,
+        count(o_orderkey) as c_count
+    from
+        customer left outer join orders on
+            c_custkey = o_custkey
+            and o_comment not like '%special%requests%'
+    group by  
+        c_custkey
+    ) as c_orders
+group by  
+    c_count
+order by
+    custdist desc,
+    c_count desc;
