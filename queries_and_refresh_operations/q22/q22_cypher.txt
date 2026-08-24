@@ -1,0 +1,61 @@
+###### Parameters
+
+c_phone
+
+
+##### relational semantics
+
+
+MATCH(c:CUSTOMER)
+WITH COLLECT(DISTINCT(SUBSTRING(c.c_phone, 0, 2)))[0..7] AS selected_codes
+MATCH (c:CUSTOMER)
+WHERE SUBSTRING(c.c_phone, 0, 2) IN selected_codes
+  AND c.c_acctbal > 0.00  
+WITH AVG(c.c_acctbal) AS average_balance, selected_codes
+MATCH (c:CUSTOMER)
+WHERE SUBSTRING(c.c_phone, 0, 2) IN selected_codes
+AND c.c_acctbal > average_balance AND NOT EXISTS {(o:ORDERS{o_custkey: c.c_custkey})}
+WITH SUBSTRING(c.c_phone, 0, 2) AS cntrycode, COUNT(c.c_custkey) AS numcust, SUM(c.c_acctbal) AS totalacctbal
+RETURN cntrycode AS CNTRYCODE, numcust, totalacctbal
+ORDER BY cntrycode
+
+
+
+
+
+##### mixed semantics
+
+MATCH(c:CUSTOMER)
+WITH COLLECT(DISTINCT(SUBSTRING(c.c_phone, 0, 2)))[0..7] AS selected_codes
+MATCH (c:CUSTOMER)
+WHERE SUBSTRING(c.c_phone, 0, 2) IN selected_codes
+  AND c.c_acctbal > 0.00  
+WITH AVG(c.c_acctbal) AS average_balance, selected_codes
+MATCH (c:CUSTOMER)
+WHERE SUBSTRING(c.c_phone, 0, 2) IN selected_codes
+AND c.c_acctbal > average_balance AND NOT EXISTS {(c)<-[:ORDERS_CUSTOMER]-(:ORDERS)}
+WITH SUBSTRING(c.c_phone, 0, 2) AS cntrycode, COUNT(c.c_custkey) AS numcust, SUM(c.c_acctbal) AS totalacctbal
+RETURN cntrycode, numcust, totalacctbal
+ORDER BY cntrycode
+
+
+
+
+
+##### graph semantics
+
+MATCH(c:CUSTOMER)
+WITH COLLECT(DISTINCT(SUBSTRING(c.c_phone, 0, 2)))[0..7] AS selected_codes
+MATCH (c:CUSTOMER)
+WHERE SUBSTRING(c.c_phone, 0, 2) IN selected_codes
+  AND c.c_acctbal > 0.00  
+WITH AVG(c.c_acctbal) AS average_balance, selected_codes
+MATCH (c:CUSTOMER)
+WHERE SUBSTRING(c.c_phone, 0, 2) IN selected_codes
+AND c.c_acctbal > average_balance AND NOT EXISTS {(c)<-[:ORDERS_CUSTOMER]-(:ORDERS)}
+WITH SUBSTRING(c.c_phone, 0, 2) AS cntrycode, COUNT(c.c_custkey) AS numcust, SUM(c.c_acctbal) AS totalacctbal
+RETURN cntrycode, numcust, totalacctbal
+ORDER BY cntrycode
+
+
+
