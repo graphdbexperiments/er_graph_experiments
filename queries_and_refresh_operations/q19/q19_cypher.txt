@@ -1,0 +1,80 @@
+###### Parameters
+
+p_brand, l_quantity
+
+
+##### relational semantics
+
+WITH toInteger(floor(5*rand())) AS digit11,
+toInteger(floor(5*rand())) AS digit12,
+toInteger(floor(5*rand())) AS digit21,
+toInteger(floor(5*rand())) AS digit22,
+toInteger(floor(5*rand())) AS digit31,
+toInteger(floor(5*rand())) AS digit32,
+toInteger(1+floor(9*rand())) AS qty1,
+toInteger(10+floor(10*rand())) AS qty2,
+toInteger(20+floor(10*rand())) AS qty3
+MATCH (p:PART), (l:LINEITEM)
+WHERE p.p_partkey = l.l_partkey
+  AND (
+    (p.p_brand = ('Brand#' + digit11 + digit12) AND p.p_container IN ['SM CASE', 'SM BOX', 'SM PACK', 'SM PKG'] AND l.l_quantity >= 1 AND l.l_quantity <= 1 + qty1) OR
+    (p.p_brand = ('Brand#' + digit21 + digit22) AND p.p_container IN ['MED BAG', 'MED BOX', 'MED PKG', 'MED PACK'] AND l.l_quantity >= qty2 AND l.l_quantity <= 10 + qty2) OR
+    (p.p_brand = ('Brand#' + digit31 + digit32) AND p.p_container IN ['LG CASE', 'LG BOX', 'LG PACK', 'LG PKG'] AND l.l_quantity >= qty3 AND l.l_quantity <= 10 + qty3)
+  )
+  AND l.l_shipmode IN ['AIR', 'AIR REG']
+  AND l.l_shipinstruct = 'DELIVER IN PERSON'
+WITH SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN revenue
+
+
+
+
+
+##### mixed semantics
+
+WITH toInteger(floor(5*rand())) AS digit11,
+toInteger(floor(5*rand())) AS digit12,
+toInteger(floor(5*rand())) AS digit21,
+toInteger(floor(5*rand())) AS digit22,
+toInteger(floor(5*rand())) AS digit31,
+toInteger(floor(5*rand())) AS digit32,
+toInteger(1+floor(9*rand())) AS qty1,
+toInteger(10+floor(10*rand())) AS qty2,
+toInteger(20+floor(10*rand())) AS qty3
+MATCH (p:PART), (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)
+WHERE p.p_partkey = ps.ps_partkey
+  AND (
+    (p.p_brand = ('Brand#' + digit11 + digit12) AND p.p_container IN ['SM CASE', 'SM BOX', 'SM PACK', 'SM PKG'] AND l.l_quantity >= 1 AND l.l_quantity <= 1 + qty1) OR
+    (p.p_brand = ('Brand#' + digit21 + digit22) AND p.p_container IN ['MED BAG', 'MED BOX', 'MED PKG', 'MED PACK'] AND l.l_quantity >= qty2 AND l.l_quantity <= 10 + qty2) OR
+    (p.p_brand = ('Brand#' + digit31 + digit32) AND p.p_container IN ['LG CASE', 'LG BOX', 'LG PACK', 'LG PKG'] AND l.l_quantity >= qty3 AND l.l_quantity <= 10 + qty3)
+  )
+  AND l.l_shipmode IN ['AIR', 'AIR REG']
+  AND l.l_shipinstruct = 'DELIVER IN PERSON'
+WITH SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN revenue
+
+
+
+
+##### graph semantics
+
+WITH toInteger(floor(5*rand())) AS digit11,
+toInteger(floor(5*rand())) AS digit12,
+toInteger(floor(5*rand())) AS digit21,
+toInteger(floor(5*rand())) AS digit22,
+toInteger(floor(5*rand())) AS digit31,
+toInteger(floor(5*rand())) AS digit32,
+toInteger(1+floor(9*rand())) AS qty1,
+toInteger(10+floor(10*rand())) AS qty2,
+toInteger(20+floor(10*rand())) AS qty3
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART)
+WHERE (
+    (p.p_brand = ('Brand#' + digit11 + digit12) AND p.p_container IN ['SM CASE', 'SM BOX', 'SM PACK', 'SM PKG'] AND l.l_quantity >= 1 AND l.l_quantity <= 1 + qty1) OR
+    (p.p_brand = ('Brand#' + digit21 + digit22) AND p.p_container IN ['MED BAG', 'MED BOX', 'MED PKG', 'MED PACK'] AND l.l_quantity >= qty2 AND l.l_quantity <= 10 + qty2) OR
+    (p.p_brand = ('Brand#' + digit31 + digit32) AND p.p_container IN ['LG CASE', 'LG BOX', 'LG PACK', 'LG PKG'] AND l.l_quantity >= qty3 AND l.l_quantity <= 10 + qty3)
+  )
+  AND l.l_shipmode IN ['AIR', 'AIR REG']
+  AND l.l_shipinstruct = 'DELIVER IN PERSON'
+WITH SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+RETURN revenue
+
