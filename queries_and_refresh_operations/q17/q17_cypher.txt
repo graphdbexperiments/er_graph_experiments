@@ -1,0 +1,71 @@
+###### Parameters
+
+p_brand, p_container
+
+
+##### relational semantics
+
+WITH ['SM', 'LG', 'MED', 'JUMBO', 'WARP'] AS containerParts1,
+['CASE', 'BOX', 'JAR', 'PKG', 'PACK', 'CAN', 'DRUM'] AS containerParts2,
+toInteger(floor(5*rand())) AS position1,
+toInteger(floor(8*rand())) AS position2
+WITH containerParts1[position1] + ' ' + containerParts2[position2] AS container,
+toInteger(floor(5*rand())) AS digit1,
+toInteger(floor(5*rand())) AS digit2
+MATCH (l:LINEITEM), (p:PART)
+WHERE l.l_partkey = p.p_partkey
+WITH p, AVG(l.l_quantity) AS qty_average, container, digit1, digit2
+MATCH (l:LINEITEM)
+WHERE l.l_partkey = p.p_partkey
+  AND p.p_brand = 'Brand#' + digit1 + digit2
+  AND p.p_container = container
+  AND l.l_quantity < 0.2 * qty_average
+WITH SUM(l.l_extendedprice) / 7.0 AS avg_yearly
+RETURN avg_yearly
+
+
+
+
+##### mixed semantics
+
+
+WITH ['SM', 'LG', 'MED', 'JUMBO', 'WARP'] AS containerParts1,
+['CASE', 'BOX', 'JAR', 'PKG', 'PACK', 'CAN', 'DRUM'] AS containerParts2,
+toInteger(floor(5*rand())) AS position1,
+toInteger(floor(8*rand())) AS position2
+WITH containerParts1[position1] + ' ' + containerParts2[position2] AS container,
+toInteger(floor(5*rand())) AS digit1,
+toInteger(floor(5*rand())) AS digit2
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP), (p:PART)
+WHERE ps.ps_partkey = p.p_partkey
+WITH p, AVG(l.l_quantity) AS qty_average, container, digit1, digit2
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)
+WHERE ps.ps_partkey = p.p_partkey
+  AND p.p_brand = 'Brand#' + digit1 + digit2
+  AND p.p_container = container
+  AND l.l_quantity < 0.2 * qty_average
+WITH SUM(l.l_extendedprice) / 7.0 AS avg_yearly
+RETURN avg_yearly
+
+
+
+
+
+##### graph semantics
+
+
+WITH ['SM', 'LG', 'MED', 'JUMBO', 'WARP'] AS containerParts1,
+['CASE', 'BOX', 'JAR', 'PKG', 'PACK', 'CAN', 'DRUM'] AS containerParts2,
+toInteger(floor(5*rand())) AS position1,
+toInteger(floor(8*rand())) AS position2
+WITH containerParts1[position1] + ' ' + containerParts2[position2] AS container,
+toInteger(floor(5*rand())) AS digit1,
+toInteger(floor(5*rand())) AS digit2
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART)
+WITH p, AVG(l.l_quantity) AS qty_average, container, digit1, digit2
+MATCH (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART)
+WHERE p.p_brand = 'Brand#' + digit1 + digit2
+  AND p.p_container = container
+  AND l.l_quantity < 0.2 * qty_average
+WITH SUM(l.l_extendedprice) / 7.0 AS avg_yearly
+RETURN avg_yearly
