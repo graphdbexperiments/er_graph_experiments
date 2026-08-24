@@ -1,0 +1,78 @@
+###### Parameters
+
+p_name, l_shipdate, n_name
+
+
+##### relational semantics
+
+
+WITH ['almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow'] AS colors,
+['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(80*rand())) AS color_position,
+toInteger(floor(25*rand())) AS nation_position
+WITH nations[nation_position] AS nation,
+colors[color_position] AS color,
+date('1993-01-01') + Duration({years: toInteger(floor(4*rand()))}) AS start_date
+MATCH (s:SUPPLIER), (n:NATION), (ps:PARTSUPP), (p:PART), (l:LINEITEM)
+WHERE n.n_name = nation
+  AND s.s_nationkey = n.n_nationkey 
+  AND ps.ps_suppkey = s.s_suppkey  
+  AND ps.ps_partkey = p.p_partkey  
+  AND l.l_suppkey = s.s_suppkey  
+  AND l.l_partkey = p.p_partkey  
+  AND p.p_name CONTAINS color  
+  AND l.l_shipdate >= start_date
+  AND l.l_shipdate < start_date + Duration({years: 1})
+WITH s, p, SUM(l.l_quantity) AS total_qty
+WHERE total_qty <= 300
+RETURN s.s_name AS supplier_name, s.s_address AS supplier_address
+ORDER BY s.s_name
+
+
+
+
+##### mixed semantics
+
+
+WITH ['almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow'] AS colors,
+['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(80*rand())) AS color_position,
+toInteger(floor(25*rand())) AS nation_position
+WITH nations[nation_position] AS nation,
+colors[color_position] AS color,
+date('1993-01-01') + Duration({years: toInteger(floor(4*rand()))}) AS start_date
+MATCH (n:NATION)<-[:SUPPLIER_NATION]-(s:SUPPLIER), (p:PART), (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)
+WHERE n.n_name = nation
+  AND ps.ps_suppkey = s.s_suppkey  
+  AND ps.ps_partkey = p.p_partkey  
+  AND p.p_name CONTAINS color  
+  AND l.l_shipdate >= start_date
+  AND l.l_shipdate < start_date + Duration({years: 1})
+WITH s, p, SUM(l.l_quantity) AS total_qty
+WHERE total_qty <= 300
+RETURN s.s_name AS supplier_name, s.s_address AS supplier_address
+ORDER BY s.s_name
+
+
+
+
+##### graph semantics
+
+
+WITH ['almond', 'antique', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched', 'blue', 'blush', 'brown', 'burlywood', 'burnished', 'chartreuse', 'chiffon', 'chocolate', 'coral', 'cornflower', 'cornsilk', 'cream', 'cyan', 'dark', 'deep', 'dim', 'dodger', 'drab', 'firebrick', 'floral', 'forest', 'frosted', 'gainsboro', 'ghost', 'goldenrod', 'green', 'grey', 'honeydew', 'hot', 'indian', 'ivory', 'khaki', 'lace', 'lavender', 'lawn', 'lemon', 'light', 'lime', 'linen', 'magenta', 'maroon', 'medium', 'metallic', 'midnight', 'mint', 'misty', 'moccasin', 'navajo', 'navy', 'olive', 'orange', 'orchid', 'pale', 'papaya', 'peach', 'peru', 'pink', 'plum', 'powder', 'puff', 'purple', 'red', 'rose', 'rosy', 'royal', 'saddle', 'salmon', 'sandy', 'seashell', 'sienna', 'sky', 'slate', 'smoke', 'snow', 'spring', 'steel', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'yellow'] AS colors,
+['ALGERIA', 'ARGENTINA', 'BRAZIL', 'CANADA', 'EGYPT', 'ETHIOPIA', 'FRANCE', 'GERMANY', 'INDIA', 'INDONESIA', 'IRAN', 'IRAQ', 'JAPAN', 'JORDAN', 'KENYA', 'MOROCCO', 'MOZAMBIQUE', 'PERU', 'CHINA', 'ROMANIA', 'SAUDI ARABIA', 'VIETNAM', 'RUSSIA', 'UNITED KINGDOM', 'UNITED STATES'] AS nations,
+toInteger(floor(80*rand())) AS color_position,
+toInteger(floor(25*rand())) AS nation_position
+WITH nations[nation_position] AS nation,
+colors[color_position] AS color,
+date('1993-01-01') + Duration({years: toInteger(floor(4*rand()))}) AS start_date
+MATCH (n:NATION)<-[:SUPPLIER_NATION]-(s:SUPPLIER)<-[:PARTSUPP_SUPPLIER]-(ps:PARTSUPP), (l:LINEITEM)-[:LINEITEM_PARTSUPP]->(ps:PARTSUPP)-[:PARTSUPP_PART]->(p:PART)
+WHERE n.n_name = nation
+  AND p.p_name CONTAINS color  
+  AND l.l_shipdate >= start_date
+  AND l.l_shipdate < start_date + Duration({years: 1})
+WITH s, p, SUM(l.l_quantity) AS total_qty
+WHERE total_qty <= 300
+RETURN s.s_name AS supplier_name, s.s_address AS supplier_address
+ORDER BY s.s_name
+
